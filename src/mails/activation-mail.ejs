@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        background-color: #f7f7f7;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+      }
+
+      .container {
+        background-color: #ffffff;
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      h1 {
+        color: #007bff;
+      }
+
+      p {
+        color: #333333;
+        line-height: 1.6;
+        margin: 15px 0;
+      }
+
+      .activation-code {
+        background-color: #f0f0f0;
+        padding: 10px;
+        font-size: 18px;
+        border-radius: 4px;
+        margin: 10px 0;
+      }
+
+      .activation-link {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 15px 30px;
+        background-color: #007bff;
+        color: #ffffff;
+        text-decoration: none;
+        border-radius: 4px;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+      }
+
+      .activation-link:hover {
+        background-color: #0056b3;
+      }
+
+      .footer {
+        margin-top: 20px;
+        color: #888888;
+        font-size: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Welcome to [Your E-Learning Platform Name]</h1>
+      <p>Hi <strong><%= user.name %></strong>,</p>
+      <p>
+        Congratulations! You are almost ready to start your learning journey
+        with us. To activate your account, please use the following 4-digit OTP:
+      </p>
+      <div class="activation-code">
+        <strong><%= activationCode %></strong>
+      </div>
+      <p class="footer">
+        Thank you for choosing [Your E-Learning Platform Name]. If you have any
+        questions, feel free to contact our support team.
+      </p>
+    </div>
+  </body>
+</html>

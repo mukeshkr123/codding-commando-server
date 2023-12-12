@@ -23,13 +23,14 @@ const userSchema = new mongoose.Schema(
         message: "Invalid email address",
       },
     },
-    mobile: {
+    phone: {
       type: String,
       validate: {
         validator: function (v) {
-          return /\d{3}-\d{3}-\d{4}/.test(v);
+          return /^\+91\d{10}$/.test(v);
         },
-        message: (props) => `${props.value} is not a valid phone number!`,
+        message: (props) =>
+          `${props.value} is not a valid phone number! Please use the format +91XXXXXXXXXX`,
       },
       required: [true, "User phone number required"],
     },
@@ -44,7 +45,7 @@ const userSchema = new mongoose.Schema(
     role: {
       type: String,
       enum: ["admin", "student", "instructor"],
-      default: "user",
+      default: "student",
     },
     isVerified: {
       type: Boolean,
@@ -53,7 +54,7 @@ const userSchema = new mongoose.Schema(
     enrollments: [
       {
         courseId: mongoose.Schema.ObjectId,
-        ref: "Course",
+        // ref: "Course",
       },
     ],
     // // Payment Information (if applicable)
