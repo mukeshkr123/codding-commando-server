@@ -1,6 +1,9 @@
 require("dotenv").config();
 const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
+const saltRounds = 10;
 const emailRegexPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const userSchema = new mongoose.Schema(
@@ -76,6 +79,16 @@ const userSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+// Hash password before saving
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) {
+    return next();
+  }
+  this.password = await bcrypt.hash(this.password, saltRounds);
+  console.log(`User ${this.email} created/updated at ${new Date()}`); // optional
+  return next();
+});
 
 const User = mongoose.model("User", userSchema);
 
