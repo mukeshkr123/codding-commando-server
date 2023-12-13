@@ -5,6 +5,7 @@ const ejs = require("ejs");
 const path = require("path");
 const sendMail = require("../utils/sendMail");
 const jwt = require("jsonwebtoken");
+const ErrorHandler = require("../utils/ErrorHandler");
 
 // registration service
 const registerUserService = async (userData) => {
@@ -14,7 +15,7 @@ const registerUserService = async (userData) => {
     // check if email exists
     const emailExists = await User.findOne({ email });
     if (emailExists) {
-      throw new Error("Email already exists");
+      throw new ErrorHandler("Email already exists", 400);
     }
 
     const user = {
@@ -50,7 +51,10 @@ const registerUserService = async (userData) => {
         activationToken: activationToken.token,
       };
     } catch (error) {
-      throw new Error("Error sending activation email: " + error.message);
+      throw new ErrorHandler(
+        "Error sending activation email: " + error.message,
+        500
+      );
     }
   } catch (error) {
     throw new Error(error.message);
@@ -68,7 +72,7 @@ const activateUserService = async (activationData) => {
 
     //verify activation code
     if (newUser.activationCode !== activationCode) {
-      throw new Error("Invalid activation code ");
+      throw new ErrorHandler("Invalid activation code ");
     }
 
     const { firstName, lastName, phone, email, password } = newUser.user;
@@ -76,7 +80,7 @@ const activateUserService = async (activationData) => {
     // check if user is already exists
     const emailExists = await User.findOne({ email });
     if (emailExists) {
-      throw new Error("Email already exists");
+      throw new ErrorHandler("Email already exists");
     }
 
     // create new user
@@ -92,7 +96,7 @@ const activateUserService = async (activationData) => {
 
     return user;
   } catch (error) {
-    throw new Error(error.message);
+    throw new ErrorHandler(error.message);
   }
 };
 
@@ -102,24 +106,23 @@ const loginUserService = async (loginData) => {
     const { email, password } = loginData;
 
     if (!email || !password) {
-      throw new Error("Please enter email and password");
+      throw new ErrorHandler("Please enter email and password");
     }
 
     const user = await User.findOne({ email });
 
     if (!user) {
-      throw new Error("Invalid email or password");
+      throw new ErrorHandler("Invalid email or password");
     }
 
     const isPasswordMatch = await user.comparePassword(password);
     if (!isPasswordMatch) {
-      throw new Error("Invalid email or password");
+      throw new ErrorHandler("Invalid email or password");
     }
 
     return user;
   } catch (error) {
-    console.log(error);
-    throw new Error(error.message);
+    throw new ErrorHandler(error.message);
   }
 };
 

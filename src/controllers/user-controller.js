@@ -1,61 +1,54 @@
+const CatchAsyncError = require("../middleware/catchAsyncError.js");
 const {
   registerUserService,
   activateUserService,
   loginUserService,
 } = require("../services/user-service.js");
+const ErrorHandler = require("../utils/ErrorHandler");
 const { generateToken } = require("../utils/jwt.js");
 
 // @user registration
 // @/api/v1/users/register
-const registerUser = async (req, res) => {
+const registerUser = CatchAsyncError(async (req, res, next) => {
   try {
     const response = await registerUserService(req.body);
-    res.status(201).json({
+    return res.status(201).json({
       success: true,
       message: `Please check your email ${response.user.email} to activate your account `,
       token: response.activationToken,
     });
   } catch (error) {
-    res.status(400).json({
-      message: error.message,
-      success: false,
-    });
+    return next(new ErrorHandler(error.message, 400));
   }
-};
+});
 
 // @user activation
 // @/api/v1/users/activate
-const activateUser = async (req, res) => {
+const activateUser = async (req, res, next) => {
   try {
     const user = await activateUserService(req.body);
-    res.status(201).json({
+    return res.status(201).json({
       success: true,
       message: "Account created successfully",
       user,
     });
   } catch (error) {
-    res.status(400).json({
-      message: error.message,
-      success: false,
-    });
+    return next(new ErrorHandler(error.message, 400));
   }
 };
 
 // @user activation
 // @/api/v1/users/login
-const loginUser = async (req, res) => {
+const loginUser = async (req, res, next) => {
   try {
     const user = await loginUserService(req.body);
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: "Logged in successfully",
       token: generateToken(user._id),
     });
   } catch (error) {
-    res.status(400).json({
-      message: error.message,
-      success: false,
-    });
+    return next(new ErrorHandler(error.message, 400));
   }
 };
 
