@@ -96,7 +96,35 @@ const activateUserService = async (activationData) => {
   }
 };
 
+// login service
+const loginUserService = async (loginData) => {
+  try {
+    const { email, password } = loginData;
+
+    if (!email || !password) {
+      throw new Error("Please enter email and password");
+    }
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      throw new Error("Invalid email or password");
+    }
+
+    const isPasswordMatch = await user.comparePassword(password);
+    if (!isPasswordMatch) {
+      throw new Error("Invalid email or password");
+    }
+
+    return user;
+  } catch (error) {
+    console.log(error);
+    throw new Error(error.message);
+  }
+};
+
 module.exports = {
   registerUserService,
   activateUserService,
+  loginUserService,
 };

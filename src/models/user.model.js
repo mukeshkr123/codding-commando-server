@@ -86,9 +86,14 @@ userSchema.pre("save", async function (next) {
     return next();
   }
   this.password = await bcrypt.hash(this.password, saltRounds);
-  console.log(`User ${this.email} created/updated at ${new Date()}`); // optional
+  console.log(`User ${this.email} created/updated at ${new Date()}`);
   return next();
 });
+
+// compare password
+userSchema.methods.comparePassword = async function (enteredPassword) {
+  return await bcrypt.compare(enteredPassword, this.password);
+};
 
 const User = mongoose.model("User", userSchema);
 
