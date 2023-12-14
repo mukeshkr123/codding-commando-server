@@ -17,5 +17,4 @@ app.use("/api/v1", ApiRoutes);
 
 //error middleware
 app.use(ErrorMiddleware);
-k;
 module.exports = app;

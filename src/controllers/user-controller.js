@@ -16,6 +16,7 @@ const registerUser = CatchAsyncError(async (req, res, next) => {
       success: true,
       message: `Please check your email ${response.user.email} to activate your account `,
       token: response.activationToken,
+      user: response.user,
     });
   } catch (error) {
     return next(new ErrorHandler(error.message, 400));
@@ -45,7 +46,15 @@ const loginUser = async (req, res, next) => {
     return res.status(200).json({
       success: true,
       message: "Logged in successfully",
-      token: generateToken(user._id),
+      user: {
+        _id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        phone: user.phone,
+        role: user.role,
+        token: generateToken(user.token),
+      },
     });
   } catch (error) {
     return next(new ErrorHandler(error.message, 400));
