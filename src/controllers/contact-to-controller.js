@@ -38,7 +38,7 @@ const bookDemo = async (req, res, next) => {
 
     return res.status(200).json({
       success: true,
-      message: "Demo booked successfully",
+      message: "Message sent successfully",
     });
   } catch (error) {
     return next(new ErrorHandler(error.message, 400));
