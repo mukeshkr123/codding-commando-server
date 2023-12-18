@@ -5,7 +5,6 @@ const {
   loginUserService,
 } = require("../services/user-service.js");
 const ErrorHandler = require("../utils/ErrorHandler");
-const { generateToken } = require("../utils/jwt.js");
 
 // @user registration
 // @/api/v1/users/register
@@ -42,7 +41,7 @@ const activateUser = async (req, res, next) => {
 // @/api/v1/users/login
 const loginUser = async (req, res, next) => {
   try {
-    const user = await loginUserService(req.body);
+    const { user, token } = await loginUserService(req.body);
     return res.status(200).json({
       success: true,
       message: "Logged in successfully",
@@ -53,8 +52,8 @@ const loginUser = async (req, res, next) => {
         email: user.email,
         phone: user.phone,
         role: user.role,
-        token: generateToken(user.token),
       },
+      token,
     });
   } catch (error) {
     return next(new ErrorHandler(error.message, 400));

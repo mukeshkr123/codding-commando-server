@@ -6,6 +6,7 @@ const path = require("path");
 const sendMail = require("../utils/sendMail");
 const jwt = require("jsonwebtoken");
 const ErrorHandler = require("../utils/ErrorHandler");
+const { generateToken } = require("../utils/jwt.js");
 
 // registration service
 const registerUserService = async (userData) => {
@@ -120,7 +121,7 @@ const loginUserService = async (loginData) => {
       throw new ErrorHandler("Invalid email or password");
     }
 
-    return user;
+    return { user, token: generateToken(user._id) };
   } catch (error) {
     throw new ErrorHandler(error.message);
   }
