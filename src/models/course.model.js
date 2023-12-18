@@ -13,11 +13,9 @@ const paymentSchema = {
   courseImageUrl: String,
   oneTimePrice: {
     type: Number,
-    required: true,
   },
   installmentsPrice: {
     type: Number,
-    required: true,
   },
 };
 
@@ -32,6 +30,10 @@ const courseSchema = new Schema(
     duration: String,
     mode: String,
     about: String,
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
     curriculum_strategy: [curriculumItemSchema],
     program_curriculum: [
       {
