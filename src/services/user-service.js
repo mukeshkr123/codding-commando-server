@@ -121,7 +121,7 @@ const loginUserService = async (loginData) => {
       throw new ErrorHandler("Invalid email or password");
     }
 
-    return { user, token: generateToken(user._id) };
+    return { user, accessToken: generateToken(user._id) };
   } catch (error) {
     throw new ErrorHandler(error.message);
   }

@@ -50,6 +50,25 @@ const isAuthenticated = CatchAsyncError(async (req, res, next) => {
   }
 });
 
+// validate roles
+
+const authorizRoles = (...roles) => {
+  return (req, res, next) => {
+    console.log(req.user?.role);
+
+    if (!roles.includes(req.user?.role || "")) {
+      return next(
+        new ErrorHandler(
+          `Role ${req.user?.role} is not allowed to access this resource`,
+          403
+        )
+      );
+    }
+    next();
+  };
+};
+
 module.exports = {
   isAuthenticated,
+  authorizRoles,
 };

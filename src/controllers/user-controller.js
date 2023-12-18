@@ -41,7 +41,7 @@ const activateUser = async (req, res, next) => {
 // @/api/v1/users/login
 const loginUser = async (req, res, next) => {
   try {
-    const { user, token } = await loginUserService(req.body);
+    const { user, accessToken } = await loginUserService(req.body);
     return res.status(200).json({
       success: true,
       message: "Logged in successfully",
@@ -53,7 +53,7 @@ const loginUser = async (req, res, next) => {
         phone: user.phone,
         role: user.role,
       },
-      token,
+      accessToken,
     });
   } catch (error) {
     return next(new ErrorHandler(error.message, 400));
