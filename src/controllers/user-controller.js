@@ -52,8 +52,8 @@ const loginUser = async (req, res, next) => {
         email: user.email,
         phone: user.phone,
         role: user.role,
+        accessToken,
       },
-      accessToken,
     });
   } catch (error) {
     return next(new ErrorHandler(error.message, 400));

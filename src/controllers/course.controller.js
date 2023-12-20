@@ -1,4 +1,5 @@
 const CatchAsyncError = require("../middleware/catchAsyncError");
+const Course = require("../models/course.model");
 const {
   createCourseService,
   updateCourseService,
@@ -10,7 +11,7 @@ const createCourse = CatchAsyncError(async (req, res, next) => {
     const response = await createCourseService(req?.user, req.body);
     return res.status(201).json({
       success: true,
-      message: "Course created successfully",
+      message: "Course created ",
       course: response,
     });
   } catch (error) {
@@ -35,7 +36,49 @@ const updateCourse = CatchAsyncError(async (req, res, next) => {
   }
 });
 
+const getCourseBycourseId = CatchAsyncError(async (req, res, next) => {
+  try {
+    const courseId = req.params.id;
+    const userId = req?.user._id;
+    const course = await Course.findOne({ _id: courseId, userId });
+
+    if (!course) {
+      throw next(new ErrorHandler("Course not found", 404));
+    }
+
+    return res.status(200).json({
+      status: true,
+      message: "Course data fetched successfully",
+      course,
+    });
+  } catch (error) {
+    return next(new ErrorHandler(error.message, 400));
+  }
+});
+
+// get All course by user
+const getAllCourses = CatchAsyncError(async (req, res, next) => {
+  try {
+    const userId = req?.user?.id;
+    if (!userId) {
+      throw next(new ErrorHandler(" Unuthorized", 400));
+    }
+
+    const courses = await Course.find({ userId });
+
+    return res.status(200).json({
+      success: true,
+      message: "Courses fetched successfully",
+      courses,
+    });
+  } catch (error) {
+    return next(new ErrorHandler(error.message, 400));
+  }
+});
+
 module.exports = {
   createCourse,
   updateCourse,
+  getCourseBycourseId,
+  getAllCourses,
 };

@@ -2,6 +2,8 @@ const express = require("express");
 const {
   createCourse,
   updateCourse,
+  getCourseBycourseId,
+  getAllCourses,
 } = require("../../controllers/course.controller");
 const { isAuthenticated, authorizRoles } = require("../../middleware/auth");
 const courseRouter = express.Router();
@@ -20,5 +22,14 @@ courseRouter.patch(
   authorizRoles("student"),
   updateCourse
 );
+// get course by id
+courseRouter.get(
+  "/:id",
+  isAuthenticated,
+  authorizRoles("student"),
+  getCourseBycourseId
+);
+// get courses by userid
+courseRouter.get("/", isAuthenticated, getAllCourses);
 
 module.exports = courseRouter;

@@ -60,6 +60,11 @@ const courseSchema = new Schema(
         enrollmentDate: { type: Date, default: Date.now },
       },
     ],
+
+    isPublished: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,
