@@ -52,7 +52,7 @@ const getCourseBycourseId = CatchAsyncError(async (req, res, next) => {
       course,
     });
   } catch (error) {
-    return next(new ErrorHandler(error.message, 400));
+    return next(new ErrorHandler(error?.message, 400));
   }
 });
 
@@ -64,7 +64,7 @@ const getAllCourses = CatchAsyncError(async (req, res, next) => {
       throw next(new ErrorHandler(" Unuthorized", 400));
     }
 
-    const courses = await Course.find({ userId });
+    const courses = await Course.find({ userId }).sort({ createdAt: "desc" });
 
     return res.status(200).json({
       success: true,

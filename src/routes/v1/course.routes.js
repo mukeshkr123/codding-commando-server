@@ -6,6 +6,7 @@ const {
   getAllCourses,
 } = require("../../controllers/course.controller");
 const { isAuthenticated, authorizRoles } = require("../../middleware/auth");
+const paymentRouter = require("./payment-details.routes");
 const courseRouter = express.Router();
 
 // create course
@@ -31,5 +32,6 @@ courseRouter.get(
 );
 // get courses by userid
 courseRouter.get("/", isAuthenticated, getAllCourses);
+courseRouter.use("/", paymentRouter);
 
 module.exports = courseRouter;

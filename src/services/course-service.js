@@ -1,4 +1,5 @@
 const Course = require("../models/course.model");
+const PaymentDetail = require("../models/payment-detail.model");
 
 const createCourseService = async (user, courseData) => {
   try {
@@ -9,10 +10,25 @@ const createCourseService = async (user, courseData) => {
       throw new Error("Please enter a course title");
     }
 
+    // Create the course
     const course = await Course.create({
       title,
       userId,
     });
+
+    // Create payment details
+    const payment = await PaymentDetail.create({
+      courseTitle: course.title,
+      course: course._id,
+    });
+
+    console.log(payment);
+
+    // Link the payment to the course
+    course.paymentDetail = payment._id;
+
+    // Save the course with the linked payment
+    await course.save();
 
     return course;
   } catch (error) {
@@ -25,6 +41,8 @@ const updateCourseService = async (courseId, { _id: userId }, values) => {
     if (!userId) {
       throw new Error("Unauthorized");
     }
+
+    console.log(values);
 
     console.log("courseId", courseId);
     console.log("userId", userId);

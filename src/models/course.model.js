@@ -11,10 +11,10 @@ const paymentSchema = {
   course_title: String,
   course_description: String,
   courseImageUrl: String,
-  oneTimePrice: {
+  fullPrice: {
     type: Number,
   },
-  installmentsPrice: {
+  installmentPrice: {
     type: Number,
   },
 };
@@ -45,7 +45,10 @@ const courseSchema = new Schema(
         ],
       },
     ],
-    payments: paymentSchema,
+    paymentDetail: {
+      type: Schema.Types.ObjectId,
+      ref: "Payment",
+    },
     category: {
       type: Schema.Types.ObjectId,
       ref: "Category",
