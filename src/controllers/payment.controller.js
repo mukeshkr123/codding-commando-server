@@ -2,6 +2,25 @@ const CatchAsyncError = require("../middleware/catchAsyncError");
 const PaymentDetail = require("../models/payment-detail.model");
 const ErrorHandler = require("../utils/ErrorHandler");
 
+const getPaymentDetails = CatchAsyncError(async (req, res, next) => {
+  try {
+    const courseId = req.params.id;
+
+    const paymentDetail = await PaymentDetail.findOne({
+      course: courseId,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Details fetched successfully",
+      paymentDetail,
+    });
+  } catch (error) {
+    console.error("Error in getPaymentDetails:", error);
+    return next(new ErrorHandler(error.message, 400));
+  }
+});
+
 const updatePaymentDetails = CatchAsyncError(async (req, res, next) => {
   try {
     const courseId = req.params.id;
@@ -31,4 +50,4 @@ const updatePaymentDetails = CatchAsyncError(async (req, res, next) => {
   }
 });
 
-module.exports = updatePaymentDetails;
+module.exports = { updatePaymentDetails, getPaymentDetails };

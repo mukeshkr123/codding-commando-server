@@ -1,12 +1,22 @@
 const express = require("express");
-const createPaymentDetails = require("../../controllers/payment.controller");
-const { isAuthenticated } = require("../../middleware/auth");
+const {
+  updatePaymentDetails,
+  getPaymentDetails,
+} = require("../../controllers/payment.controller");
+const { isAuthenticated, authorizRoles } = require("../../middleware/auth");
 const paymentRouter = express.Router();
 
 paymentRouter.patch(
-  "/:id/payment-detail",
+  "/:id/payment-details",
   isAuthenticated,
-  createPaymentDetails
+  authorizRoles("student"),
+  updatePaymentDetails
+);
+paymentRouter.get(
+  "/:id/payment-details",
+  isAuthenticated,
+  authorizRoles("student"),
+  getPaymentDetails
 );
 
 module.exports = paymentRouter;
