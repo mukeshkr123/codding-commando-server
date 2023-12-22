@@ -7,18 +7,6 @@ const curriculumItemSchema = {
   imageUrl: String,
 };
 
-const paymentSchema = {
-  course_title: String,
-  course_description: String,
-  courseImageUrl: String,
-  fullPrice: {
-    type: Number,
-  },
-  installmentPrice: {
-    type: Number,
-  },
-};
-
 const courseSchema = new Schema(
   {
     title: {
@@ -34,15 +22,16 @@ const courseSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "User",
     },
-    curriculum_strategy: [curriculumItemSchema],
+    strategy: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Strategy",
+      },
+    ],
     program_curriculum: [
       {
-        title: String,
-        content: [
-          {
-            type: String,
-          },
-        ],
+        type: Schema.Types.ObjectId,
+        ref: "Curriculum",
       },
     ],
     paymentDetail: {

@@ -40,7 +40,9 @@ const getCourseBycourseId = CatchAsyncError(async (req, res, next) => {
   try {
     const courseId = req.params.id;
     const userId = req?.user._id;
-    const course = await Course.findOne({ _id: courseId, userId });
+    const course = await Course.findOne({ _id: courseId, userId })
+      .populate("program_curriculum")
+      .populate("strategy");
 
     if (!course) {
       throw next(new ErrorHandler("Course not found", 404));

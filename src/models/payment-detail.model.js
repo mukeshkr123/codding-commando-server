@@ -11,7 +11,7 @@ const paymentSchema = new Schema(
     courseTitle: {
       type: String,
     },
-    descriptions: {
+    description: {
       type: String,
     },
     imageUrl: {

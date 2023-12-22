@@ -7,6 +7,8 @@ const {
 } = require("../../controllers/course.controller");
 const { isAuthenticated, authorizRoles } = require("../../middleware/auth");
 const paymentRouter = require("./payment-details.routes");
+const programRouter = require("./program.routes");
+const strategyRouter = require("./strategy.routes");
 const courseRouter = express.Router();
 
 // create course
@@ -33,5 +35,7 @@ courseRouter.get(
 // get courses by userid
 courseRouter.get("/", isAuthenticated, getAllCourses);
 courseRouter.use("/", paymentRouter);
+courseRouter.use("/", programRouter);
+courseRouter.use("/", strategyRouter);
 
 module.exports = courseRouter;
