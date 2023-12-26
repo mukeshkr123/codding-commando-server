@@ -3,6 +3,8 @@ const { isAuthenticated, authorizRoles } = require("../../middleware/auth");
 const {
   createMentor,
   getMentorsById,
+  updateMentor,
+  getAllMentors,
 } = require("../../controllers/mentor-controller");
 const mentorRouter = express.Router();
 
@@ -19,5 +21,14 @@ mentorRouter.get(
   authorizRoles("student"),
   getMentorsById
 );
+
+mentorRouter.patch(
+  "/:mentorId",
+  isAuthenticated,
+  authorizRoles("student"),
+  updateMentor
+);
+
+mentorRouter.get("/", isAuthenticated, authorizRoles("student"), getAllMentors);
 
 module.exports = mentorRouter;

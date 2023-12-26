@@ -19,6 +19,13 @@ const mentorSchema = {
       ref: "Course",
     },
   ],
+  isPublished: {
+    type: Boolean,
+    default: false,
+  },
+  imageUrl: {
+    type: String,
+  },
 };
 
 const Mentor = mongoose.model("Mentor", mentorSchema);

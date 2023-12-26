@@ -39,7 +39,44 @@ const getMentorsById = CatchAsyncError(async (req, res, next) => {
   }
 });
 
+const updateMentor = CatchAsyncError(async (req, res, next) => {
+  try {
+    const mentorId = req.params.mentorId;
+    const data = req.body;
+
+    const mentor = await Mentor.findByIdAndUpdate(
+      { _id: mentorId },
+      { $set: data },
+      { new: true }
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "Updated successfully",
+      mentor,
+    });
+  } catch (error) {
+    return next(new ErrorHandler(error.message, 400));
+  }
+});
+
+const getAllMentors = CatchAsyncError(async (req, res, next) => {
+  try {
+    const mentors = await Mentor.find();
+
+    return res.status(200).json({
+      success: true,
+      message: "fetched successfully",
+      mentors,
+    });
+  } catch (error) {
+    return next(new ErrorHandler(error.message, 400));
+  }
+});
+
 module.exports = {
   createMentor,
   getMentorsById,
+  updateMentor,
+  getAllMentors,
 };
