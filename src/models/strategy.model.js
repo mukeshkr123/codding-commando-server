@@ -13,6 +13,10 @@ const strategySchema = new Schema(
       type: String,
     },
     imageUrl: String,
+    isPublished: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

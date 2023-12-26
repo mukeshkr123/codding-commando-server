@@ -4,6 +4,7 @@ const { isAuthenticated, authorizRoles } = require("../../middleware/auth");
 const {
   updateProgram,
   createProgram,
+  getProgramById,
 } = require("../../controllers/program-curriculum");
 const programRouter = express.Router();
 
@@ -15,10 +16,17 @@ programRouter.post(
 );
 
 programRouter.patch(
-  "/:id/update-program",
+  "/:courseId/program/:programId/update",
   isAuthenticated,
   authorizRoles("student"),
   updateProgram
+);
+
+programRouter.get(
+  "/:courseId/program/:programId",
+  isAuthenticated,
+  authorizRoles("student"),
+  getProgramById
 );
 
 module.exports = programRouter;

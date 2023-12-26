@@ -38,16 +38,26 @@ const createProgram = CatchAsyncError(async (req, res, next) => {
 
 const updateProgram = CatchAsyncError(async (req, res, next) => {
   try {
-    const courseId = req.params.id;
+    const courseId = req.params.courseId;
     const data = req.body;
 
-    console.log(courseId);
+    console.log(data);
 
-    const curriculum = await Curriculum.findOneAndUpdate(
-      { course: courseId },
-      { $set: data },
-      { new: true, lean: true }
-    );
+    let curriculum;
+
+    if (data?.description != null) {
+      // Update the description
+      curriculum = await Curriculum.findOne({ course: courseId });
+      curriculum.description.push(data.description);
+      await curriculum.save();
+    } else {
+      // Update other fields
+      curriculum = await Curriculum.findOneAndUpdate(
+        { course: courseId },
+        { $set: data },
+        { new: true, lean: true }
+      );
+    }
 
     if (!curriculum) {
       return res.status(404).json({
@@ -56,10 +66,32 @@ const updateProgram = CatchAsyncError(async (req, res, next) => {
       });
     }
 
+    // Respond with success message and updated curriculum
     return res.status(200).json({
       success: true,
       message: "Updated Successfully",
       curriculum,
+    });
+  } catch (error) {
+    console.error("Error in updateProgram:", error);
+    return next(new ErrorHandler(error.message, 400));
+  }
+});
+
+const getProgramById = CatchAsyncError(async (req, res, next) => {
+  try {
+    const courseId = req.params.courseId;
+    const programId = req.params.programId;
+
+    const program = await Curriculum.findOne({ course: courseId });
+
+    if (!program) {
+      return next(new ErrorHandler("Program not found", 400));
+    }
+    return res.status(200).json({
+      success: true,
+      message: "Fetched successfully",
+      program,
     });
   } catch (error) {
     console.error("Error in updateCurriculumDetails:", error);
@@ -70,4 +102,5 @@ const updateProgram = CatchAsyncError(async (req, res, next) => {
 module.exports = {
   createProgram,
   updateProgram,
+  getProgramById,
 };

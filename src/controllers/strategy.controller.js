@@ -36,7 +36,7 @@ const createStrategy = CatchAsyncError(async (req, res, next) => {
 
 const updateStrategy = CatchAsyncError(async (req, res, next) => {
   try {
-    const courseId = req.params.id;
+    const courseId = req.params.courseId;
     const data = req.body;
 
     console.log(courseId);
@@ -64,7 +64,29 @@ const updateStrategy = CatchAsyncError(async (req, res, next) => {
   }
 });
 
+const getStrategyById = CatchAsyncError(async (req, res, next) => {
+  try {
+    const courseId = req.params.courseId;
+    const strategyId = req.params.strategyId;
+
+    const strategy = await Strategy.findOne({ course: courseId });
+
+    if (!strategy) {
+      return next(new ErrorHandler("strategy not found", 400));
+    }
+    return res.status(200).json({
+      success: true,
+      message: "Fetched successfully",
+      strategy,
+    });
+  } catch (error) {
+    console.error("Error in getStrategyById:", error);
+    return next(new ErrorHandler(error.message, 400));
+  }
+});
+
 module.exports = {
   createStrategy,
   updateStrategy,
+  getStrategyById,
 };

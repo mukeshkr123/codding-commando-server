@@ -3,6 +3,7 @@ const { isAuthenticated, authorizRoles } = require("../../middleware/auth");
 const {
   createStrategy,
   updateStrategy,
+  getStrategyById,
 } = require("../../controllers/strategy.controller");
 const strategyRouter = express.Router();
 
@@ -14,10 +15,17 @@ strategyRouter.post(
 );
 
 strategyRouter.patch(
-  "/:id/update-strategy",
+  "/:courseId/strategy/:strategyId/update",
   isAuthenticated,
   authorizRoles("student"),
   updateStrategy
+);
+
+strategyRouter.get(
+  "/:courseId/strategy/:strategyId",
+  isAuthenticated,
+  authorizRoles("student"),
+  getStrategyById
 );
 
 module.exports = strategyRouter;
