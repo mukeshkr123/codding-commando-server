@@ -4,6 +4,7 @@ const {
   updateCourse,
   getCourseBycourseId,
   getAllCourses,
+  assignMentor,
 } = require("../../controllers/course.controller");
 const { isAuthenticated, authorizRoles } = require("../../middleware/auth");
 const paymentRouter = require("./payment-details.routes");
@@ -32,6 +33,14 @@ courseRouter.get(
   authorizRoles("student"),
   getCourseBycourseId
 );
+// assign mentor
+courseRouter.post(
+  "/:id/assign-mentor",
+  isAuthenticated,
+  authorizRoles("student"),
+  assignMentor
+);
+
 // get courses by userid
 courseRouter.get("/", isAuthenticated, getAllCourses);
 courseRouter.use("/", paymentRouter);

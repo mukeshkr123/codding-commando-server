@@ -1,5 +1,6 @@
 const CatchAsyncError = require("../middleware/catchAsyncError");
 const Course = require("../models/course.model");
+const Mentor = require("../models/mentors.model");
 const {
   createCourseService,
   updateCourseService,
@@ -78,9 +79,66 @@ const getAllCourses = CatchAsyncError(async (req, res, next) => {
   }
 });
 
+const assignMentor = CatchAsyncError(async (req, res, next) => {
+  try {
+    const courseId = req.params.id;
+    const mentorId = req.body.mentorId;
+    const userId = req?.user._id;
+
+    // Assign mentors
+    const course = await Course.findOne({ _id: courseId, userId }).catch(
+      (err) => {
+        throw new Error("Course not found");
+      }
+    );
+
+    if (!course) {
+      throw new Error("Course not found");
+    }
+
+    const mentor = await Mentor.findOne({ _id: mentorId }).catch((err) => {
+      throw new Error("Mentor not found");
+    });
+
+    if (!mentor) {
+      throw new Error("Mentor not found");
+    }
+
+    // Check if the mentor is already assigned to the course
+    if (course.mentors.includes(mentor._id)) {
+      throw new Error("Mentor is already assigned to this course");
+    }
+
+    // Check if the course is already assigned to the mentor
+    if (mentor.courseAssigned.includes(course._id)) {
+      throw new Error("Course is already assigned to this mentor");
+    }
+
+    course.mentors.push(mentor._id);
+    await course.save().catch((err) => {
+      throw new Error("Error saving course");
+    });
+
+    mentor.courseAssigned.push(course._id);
+    await mentor.save().catch((err) => {
+      throw new Error("Error saving mentor");
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Course has been assigned",
+      mentor,
+      course,
+    });
+  } catch (error) {
+    return next(new ErrorHandler(error.message, 400));
+  }
+});
+
 module.exports = {
   createCourse,
   updateCourse,
   getCourseBycourseId,
   getAllCourses,
+  assignMentor,
 };

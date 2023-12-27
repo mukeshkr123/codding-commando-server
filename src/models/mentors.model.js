@@ -1,32 +1,43 @@
 const mongoose = require("mongoose");
 
-const mentorSchema = {
-  name: {
-    type: String,
-    required: [true, "Please enter your name"],
-  },
-  description: {
-    type: String,
-  },
-  additionInfo: [
-    {
+const mentorSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: [true, "Please enter your name"],
+    },
+    description: {
       type: String,
     },
-  ],
-  assignCourses: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Course",
+    additionInfo: [
+      {
+        type: String,
+      },
+    ],
+    assignCourses: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Course",
+      },
+    ],
+    isPublished: {
+      type: Boolean,
+      default: false,
     },
-  ],
-  isPublished: {
-    type: Boolean,
-    default: false,
+    imageUrl: {
+      type: String,
+    },
+    courseAssigned: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Course",
+      },
+    ],
   },
-  imageUrl: {
-    type: String,
-  },
-};
+  {
+    timestamps: true,
+  }
+);
 
 const Mentor = mongoose.model("Mentor", mentorSchema);
 
