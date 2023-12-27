@@ -4,6 +4,9 @@ const {
   createStrategy,
   updateStrategy,
   getStrategyById,
+  publishStrategy,
+  unpublishStrategy,
+  deleteStrategy,
 } = require("../../controllers/strategy.controller");
 const strategyRouter = express.Router();
 
@@ -26,6 +29,27 @@ strategyRouter.get(
   isAuthenticated,
   authorizRoles("student"),
   getStrategyById
+);
+
+strategyRouter.patch(
+  "/:courseId/strategy/:strategyId/publish",
+  isAuthenticated,
+  authorizRoles("student"),
+  publishStrategy
+);
+
+strategyRouter.patch(
+  "/:courseId/strategy/:strategyId/unpublish",
+  isAuthenticated,
+  authorizRoles("student"),
+  unpublishStrategy
+);
+
+strategyRouter.delete(
+  "/:courseId/strategy/:strategyId",
+  isAuthenticated,
+  authorizRoles("student"),
+  deleteStrategy
 );
 
 module.exports = strategyRouter;

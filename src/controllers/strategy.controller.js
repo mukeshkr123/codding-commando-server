@@ -1,7 +1,6 @@
 const CatchAsyncError = require("../middleware/catchAsyncError");
 const Course = require("../models/course.model");
 const Strategy = require("../models/strategy.model");
-
 const ErrorHandler = require("../utils/ErrorHandler");
 
 const createStrategy = CatchAsyncError(async (req, res, next) => {
@@ -25,7 +24,7 @@ const createStrategy = CatchAsyncError(async (req, res, next) => {
     console.log(course);
 
     return res.status(201).json({
-      succes: true,
+      success: true,
       message: "Strategy created successfully",
       strategy,
     });
@@ -38,11 +37,12 @@ const updateStrategy = CatchAsyncError(async (req, res, next) => {
   try {
     const courseId = req.params.courseId;
     const data = req.body;
+    const strategyId = req.params.strategyId;
 
     console.log(courseId);
 
     const strategy = await Strategy.findOneAndUpdate(
-      { course: courseId },
+      { _id: strategyId, course: courseId },
       { $set: data },
       { new: true, lean: true }
     );
@@ -69,11 +69,15 @@ const getStrategyById = CatchAsyncError(async (req, res, next) => {
     const courseId = req.params.courseId;
     const strategyId = req.params.strategyId;
 
-    const strategy = await Strategy.findOne({ course: courseId });
+    const strategy = await Strategy.findOne({
+      _id: strategyId,
+      course: courseId,
+    });
 
     if (!strategy) {
-      return next(new ErrorHandler("strategy not found", 400));
+      return next(new ErrorHandler("Strategy not found", 404));
     }
+
     return res.status(200).json({
       success: true,
       message: "Fetched successfully",
@@ -85,8 +89,85 @@ const getStrategyById = CatchAsyncError(async (req, res, next) => {
   }
 });
 
+const publishStrategy = CatchAsyncError(async (req, res, next) => {
+  try {
+    const courseId = req.params.courseId;
+    const strategyId = req.params.strategyId;
+
+    console.log(courseId);
+    console.log(strategyId);
+
+    const strategy = await Strategy.findOneAndUpdate(
+      {
+        course: courseId,
+        _id: strategyId,
+      },
+      { $set: { isPublished: true } },
+      {
+        new: true,
+      }
+    );
+
+    res
+      .status(200)
+      .json({ success: true, message: "Strategy published", data: strategy });
+  } catch (error) {
+    return next(new ErrorHandler(error.message, 400));
+  }
+});
+
+const unpublishStrategy = CatchAsyncError(async (req, res, next) => {
+  try {
+    const courseId = req.params.courseId;
+    const strategyId = req.params.strategyId;
+
+    const strategy = await Strategy.findOneAndUpdate(
+      {
+        course: courseId,
+        _id: strategyId,
+      },
+      { $set: { isPublished: false } },
+      {
+        new: true,
+      }
+    );
+
+    res
+      .status(200)
+      .json({ success: true, message: "Strategy unpublished", data: strategy });
+  } catch (error) {
+    return next(new ErrorHandler(error.message, 400));
+  }
+});
+
+const deleteStrategy = CatchAsyncError(async (req, res, next) => {
+  try {
+    const courseId = req.params.courseId;
+    const strategyId = req.params.strategyId;
+
+    const deletedStrategy = await Strategy.findOneAndDelete({
+      course: courseId,
+      _id: strategyId,
+    });
+
+    if (!deletedStrategy) {
+      return next(new ErrorHandler("Strategy not found", 404));
+    }
+
+    console.log(`Strategy : ${deletedStrategy}`);
+    res
+      .status(200)
+      .json({ success: true, message: "Strategy deleted", data: {} });
+  } catch (error) {
+    return next(new ErrorHandler(error.message, 400));
+  }
+});
+
 module.exports = {
   createStrategy,
   updateStrategy,
   getStrategyById,
+  publishStrategy,
+  unpublishStrategy,
+  deleteStrategy,
 };
