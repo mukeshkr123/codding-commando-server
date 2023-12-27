@@ -39,7 +39,10 @@ const createProgram = CatchAsyncError(async (req, res, next) => {
 const updateProgram = CatchAsyncError(async (req, res, next) => {
   try {
     const courseId = req.params.courseId;
+    const programId = req.params.programId;
     const data = req.body;
+
+    console.log(req.params);
 
     console.log(data);
 
@@ -47,13 +50,19 @@ const updateProgram = CatchAsyncError(async (req, res, next) => {
 
     if (data?.description != null) {
       // Update the description
-      curriculum = await Curriculum.findOne({ course: courseId });
+      curriculum = await Curriculum.findOne({
+        _id: programId,
+        course: courseId,
+      });
       curriculum.description.push(data.description);
       await curriculum.save();
     } else {
       // Update other fields
       curriculum = await Curriculum.findOneAndUpdate(
-        { course: courseId },
+        {
+          _id: programId,
+          course: courseId,
+        },
         { $set: data },
         { new: true, lean: true }
       );
@@ -83,7 +92,12 @@ const getProgramById = CatchAsyncError(async (req, res, next) => {
     const courseId = req.params.courseId;
     const programId = req.params.programId;
 
-    const program = await Curriculum.findOne({ course: courseId });
+    const program = await Curriculum.findOne({
+      course: courseId,
+      _id: programId,
+    });
+
+    console.log(program);
 
     if (!program) {
       return next(new ErrorHandler("Program not found", 400));
@@ -99,8 +113,82 @@ const getProgramById = CatchAsyncError(async (req, res, next) => {
   }
 });
 
+const publishProgram = CatchAsyncError(async (req, res, next) => {
+  try {
+    const courseId = req.params.courseId;
+    const programId = req.params.programId;
+
+    const program = await Curriculum.findOneAndUpdate(
+      {
+        course: courseId,
+        _id: programId,
+      },
+      { $set: { isPublished: true } }, // Use { isPublished: true } directly
+      {
+        new: true,
+      }
+    );
+
+    res
+      .status(200)
+      .json({ success: true, message: "Program published", data: program });
+  } catch (error) {
+    return next(new ErrorHandler(error.message, 400));
+  }
+});
+
+const unpublishProgram = CatchAsyncError(async (req, res, next) => {
+  try {
+    const courseId = req.params.courseId;
+    const programId = req.params.programId;
+
+    const program = await Curriculum.findOneAndUpdate(
+      {
+        course: courseId,
+        _id: programId,
+      },
+      { $set: { isPublished: false } },
+      {
+        new: true,
+      }
+    );
+
+    res
+      .status(200)
+      .json({ success: true, message: "Program published", data: program });
+  } catch (error) {
+    return next(new ErrorHandler(error.message, 400));
+  }
+});
+
+const deleteProgram = CatchAsyncError(async (req, res, next) => {
+  try {
+    const courseId = req.params.courseId;
+    const programId = req.params.programId;
+
+    const deletedProgram = await Curriculum.findOneAndDelete({
+      course: courseId,
+      _id: programId,
+    });
+
+    if (!deletedProgram) {
+      return next(new ErrorHandler("Program not found", 404));
+    }
+
+    console.log(`Deleted program: ${deletedProgram}`);
+    res
+      .status(200)
+      .json({ success: true, message: "Program deleted", data: {} });
+  } catch (error) {
+    return next(new ErrorHandler(error.message, 400));
+  }
+});
+
 module.exports = {
   createProgram,
   updateProgram,
   getProgramById,
+  publishProgram,
+  unpublishProgram,
+  deleteProgram,
 };

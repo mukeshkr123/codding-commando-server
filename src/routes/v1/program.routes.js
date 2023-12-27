@@ -5,6 +5,9 @@ const {
   updateProgram,
   createProgram,
   getProgramById,
+  publishProgram,
+  unpublishProgram,
+  deleteProgram,
 } = require("../../controllers/program-curriculum");
 const programRouter = express.Router();
 
@@ -29,4 +32,24 @@ programRouter.get(
   getProgramById
 );
 
+programRouter.patch(
+  "/:courseId/program/:programId/publish",
+  isAuthenticated,
+  authorizRoles("student"),
+  publishProgram
+);
+
+programRouter.patch(
+  "/:courseId/program/:programId/unpublish",
+  isAuthenticated,
+  authorizRoles("student"),
+  unpublishProgram
+);
+
+programRouter.delete(
+  "/:courseId/program/:programId",
+  isAuthenticated,
+  authorizRoles("student"),
+  deleteProgram
+);
 module.exports = programRouter;

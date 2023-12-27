@@ -43,7 +43,10 @@ const getCourseBycourseId = CatchAsyncError(async (req, res, next) => {
     const userId = req?.user._id;
     const course = await Course.findOne({ _id: courseId, userId })
       .populate("program_curriculum")
-      .populate("strategy");
+      .populate("strategy")
+      .populate("mentors");
+
+    console.log(course);
 
     if (!course) {
       throw next(new ErrorHandler("Course not found", 404));
@@ -106,12 +109,12 @@ const assignMentor = CatchAsyncError(async (req, res, next) => {
 
     // Check if the mentor is already assigned to the course
     if (course.mentors.includes(mentor._id)) {
-      throw new Error("Mentor is already assigned to this course");
+      throw new Error("Mentor is already assigned");
     }
 
     // Check if the course is already assigned to the mentor
     if (mentor.courseAssigned.includes(course._id)) {
-      throw new Error("Course is already assigned to this mentor");
+      throw new Error("Course is already assigned");
     }
 
     course.mentors.push(mentor._id);
@@ -127,7 +130,6 @@ const assignMentor = CatchAsyncError(async (req, res, next) => {
     return res.status(200).json({
       success: true,
       message: "Course has been assigned",
-      mentor,
       course,
     });
   } catch (error) {

@@ -42,7 +42,6 @@ const courseSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "Category",
     },
-    instructors: [{ type: Schema.Types.ObjectId, ref: "Instructor" }],
     mentors: [
       {
         type: Schema.Types.ObjectId,
