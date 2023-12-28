@@ -74,9 +74,79 @@ const getAllMentors = CatchAsyncError(async (req, res, next) => {
   }
 });
 
+const publishMentor = CatchAsyncError(async (req, res, next) => {
+  try {
+    const mentorId = req.params.mentorId;
+
+    console.log(mentorId);
+
+    const mentor = await Mentor.findOneAndUpdate(
+      {
+        _id: mentorId,
+      },
+      { $set: { isPublished: true } },
+      {
+        new: true,
+      }
+    );
+
+    res
+      .status(200)
+      .json({ success: true, message: "Mentor published", data: mentor });
+  } catch (error) {
+    return next(new ErrorHandler(error.message, 400));
+  }
+});
+
+const unpublishMentor = CatchAsyncError(async (req, res, next) => {
+  try {
+    const mentorId = req.params.mentorId;
+
+    const mentor = await Mentor.findOneAndUpdate(
+      {
+        _id: mentorId,
+      },
+      { $set: { isPublished: false } },
+      {
+        new: true,
+      }
+    );
+
+    res
+      .status(200)
+      .json({ success: true, message: "Mentor unpublished", data: mentor });
+  } catch (error) {
+    return next(new ErrorHandler(error.message, 400));
+  }
+});
+
+const deleteMentor = CatchAsyncError(async (req, res, next) => {
+  try {
+    const mentorId = req.params.mentorId;
+
+    const deletedMentor = await Mentor.findOneAndDelete({
+      _id: mentorId,
+    });
+
+    if (!deletedMentor) {
+      return next(new ErrorHandler("Mentor not found", 404));
+    }
+
+    console.log(`Mentor : ${deletedMentor}`);
+    res
+      .status(200)
+      .json({ success: true, message: "Mentor deleted", data: {} });
+  } catch (error) {
+    return next(new ErrorHandler(error.message, 400));
+  }
+});
+
 module.exports = {
   createMentor,
   getMentorsById,
   updateMentor,
   getAllMentors,
+  publishMentor,
+  unpublishMentor,
+  deleteMentor,
 };

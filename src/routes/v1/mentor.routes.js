@@ -5,6 +5,9 @@ const {
   getMentorsById,
   updateMentor,
   getAllMentors,
+  publishMentor,
+  unpublishMentor,
+  deleteMentor,
 } = require("../../controllers/mentor-controller");
 const mentorRouter = express.Router();
 
@@ -27,6 +30,27 @@ mentorRouter.patch(
   isAuthenticated,
   authorizRoles("student"),
   updateMentor
+);
+
+mentorRouter.patch(
+  "/:mentorId/publish",
+  isAuthenticated,
+  authorizRoles("student"),
+  publishMentor
+);
+
+mentorRouter.patch(
+  "/:mentorId/unpublish",
+  isAuthenticated,
+  authorizRoles("student"),
+  unpublishMentor
+);
+
+mentorRouter.delete(
+  "/:mentorId",
+  isAuthenticated,
+  authorizRoles("student"),
+  deleteMentor
 );
 
 mentorRouter.get("/", isAuthenticated, authorizRoles("student"), getAllMentors);
