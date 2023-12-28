@@ -55,24 +55,28 @@ const userSchema = new mongoose.Schema(
     },
     enrollments: [
       {
-        courseId: mongoose.Schema.ObjectId,
-        // ref: "Course",
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Course",
       },
     ],
-    // // Payment Information (if applicable)
-    // paymentHistory: [
-    //   {
-    //     courseId: {
-    //       type: mongoose.Schema.Types.ObjectId,
-    //       ref: "Course",
-    //     },
-    //     amount: Number,
-    //     timestamp: {
-    //       type: Date,
-    //       default: Date.now,
-    //     },
-    //   },
-    // ],
+    paymentHistory: [
+      {
+        courseId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Course",
+        },
+        payment_id: {
+          type: String,
+        },
+        order_id: {
+          type: String,
+        },
+        timestamps: {
+          type: Date,
+          default: Date.now(),
+        },
+      },
+    ],
   },
   {
     timestamps: true,
