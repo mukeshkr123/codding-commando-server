@@ -131,9 +131,9 @@ const verifyPaymentOrder = CatchAsyncError(async (req, res, next) => {
 
     if (isAuthentic) {
       // assign course to the user
-      const user = await User.findById({ _id: req.user.id });
-      user.enrollments.push(courseId);
-      user.save();
+      // const user = await User.findById({ _id: req.user.id });
+      // user.enrollments.push(courseId);
+      // user.save();
     } else {
       return res.status(400).json({
         success: false,

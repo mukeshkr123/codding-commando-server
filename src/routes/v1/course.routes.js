@@ -16,28 +16,28 @@ const courseRouter = express.Router();
 courseRouter.post(
   "/create",
   isAuthenticated,
-  authorizRoles("student"),
+  authorizRoles("admin"),
   createCourse
 );
 // update course
 courseRouter.patch(
   "/update/:id",
   isAuthenticated,
-  authorizRoles("student"),
+  authorizRoles("admin"),
   updateCourse
 );
 // get course by id
 courseRouter.get(
   "/:id",
   isAuthenticated,
-  authorizRoles("student"),
+  authorizRoles("admin"),
   getCourseBycourseId
 );
 // assign mentor
 courseRouter.post(
   "/:id/assign-mentor",
   isAuthenticated,
-  authorizRoles("student"),
+  authorizRoles("admin"),
   assignMentor
 );
 

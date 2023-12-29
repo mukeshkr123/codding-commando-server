@@ -1,4 +1,5 @@
 const CatchAsyncError = require("../middleware/catchAsyncError.js");
+const User = require("../models/user.model.js");
 const {
   registerUserService,
   activateUserService,
@@ -61,8 +62,28 @@ const loginUser = async (req, res, next) => {
   }
 };
 
+// Get all students
+const getAllStudents = CatchAsyncError(async (req, res, next) => {
+  try {
+    const students = await User.find({ role: "student" }).select(
+      "firstName lastName email phone"
+    );
+
+    console.log(students);
+
+    return res.status(200).json({
+      success: true,
+      message: "Students fetched successfully",
+      students,
+    });
+  } catch (error) {
+    return next(new ErrorHandler(error.message, 400));
+  }
+});
+
 module.exports = {
   registerUser,
   activateUser,
   loginUser,
+  getAllStudents,
 };

@@ -14,42 +14,42 @@ const mentorRouter = express.Router();
 mentorRouter.post(
   "/create",
   isAuthenticated,
-  authorizRoles("student"),
+  authorizRoles("admin"),
   createMentor
 );
 
 mentorRouter.get(
   "/:mentorId",
   isAuthenticated,
-  authorizRoles("student"),
+  authorizRoles("admin"),
   getMentorsById
 );
 
 mentorRouter.patch(
   "/:mentorId",
   isAuthenticated,
-  authorizRoles("student"),
+  authorizRoles("admin"),
   updateMentor
 );
 
 mentorRouter.patch(
   "/:mentorId/publish",
   isAuthenticated,
-  authorizRoles("student"),
+  authorizRoles("admin"),
   publishMentor
 );
 
 mentorRouter.patch(
   "/:mentorId/unpublish",
   isAuthenticated,
-  authorizRoles("student"),
+  authorizRoles("admin"),
   unpublishMentor
 );
 
 mentorRouter.delete(
   "/:mentorId",
   isAuthenticated,
-  authorizRoles("student"),
+  authorizRoles("admin"),
   deleteMentor
 );
 

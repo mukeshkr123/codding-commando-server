@@ -14,42 +14,42 @@ const programRouter = express.Router();
 programRouter.post(
   "/:id/create-program",
   isAuthenticated,
-  authorizRoles("student"),
+  authorizRoles("admin"),
   createProgram
 );
 
 programRouter.patch(
   "/:courseId/program/:programId/update",
   isAuthenticated,
-  authorizRoles("student"),
+  authorizRoles("admin"),
   updateProgram
 );
 
 programRouter.get(
   "/:courseId/program/:programId",
   isAuthenticated,
-  authorizRoles("student"),
+  authorizRoles("admin"),
   getProgramById
 );
 
 programRouter.patch(
   "/:courseId/program/:programId/publish",
   isAuthenticated,
-  authorizRoles("student"),
+  authorizRoles("admin"),
   publishProgram
 );
 
 programRouter.patch(
   "/:courseId/program/:programId/unpublish",
   isAuthenticated,
-  authorizRoles("student"),
+  authorizRoles("admin"),
   unpublishProgram
 );
 
 programRouter.delete(
   "/:courseId/program/:programId",
   isAuthenticated,
-  authorizRoles("student"),
+  authorizRoles("admin"),
   deleteProgram
 );
 module.exports = programRouter;

@@ -13,42 +13,42 @@ const strategyRouter = express.Router();
 strategyRouter.post(
   "/:id/create-strategy",
   isAuthenticated,
-  authorizRoles("student"),
+  authorizRoles("admin"),
   createStrategy
 );
 
 strategyRouter.patch(
   "/:courseId/strategy/:strategyId/update",
   isAuthenticated,
-  authorizRoles("student"),
+  authorizRoles("admin"),
   updateStrategy
 );
 
 strategyRouter.get(
   "/:courseId/strategy/:strategyId",
   isAuthenticated,
-  authorizRoles("student"),
+  authorizRoles("admin"),
   getStrategyById
 );
 
 strategyRouter.patch(
   "/:courseId/strategy/:strategyId/publish",
   isAuthenticated,
-  authorizRoles("student"),
+  authorizRoles("admin"),
   publishStrategy
 );
 
 strategyRouter.patch(
   "/:courseId/strategy/:strategyId/unpublish",
   isAuthenticated,
-  authorizRoles("student"),
+  authorizRoles("admin"),
   unpublishStrategy
 );
 
 strategyRouter.delete(
   "/:courseId/strategy/:strategyId",
   isAuthenticated,
-  authorizRoles("student"),
+  authorizRoles("admin"),
   deleteStrategy
 );
 

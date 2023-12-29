@@ -11,13 +11,13 @@ const paymentRouter = express.Router();
 paymentRouter.patch(
   "/:id/payment-details",
   isAuthenticated,
-  authorizRoles("student"),
+  authorizRoles("admin"),
   updatePaymentDetails
 );
 paymentRouter.get(
   "/:id/payment-details",
   isAuthenticated,
-  authorizRoles("student"),
+  authorizRoles("admin"),
   getPaymentDetails
 );
 
