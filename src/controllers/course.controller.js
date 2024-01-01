@@ -137,6 +137,65 @@ const assignMentor = CatchAsyncError(async (req, res, next) => {
   }
 });
 
+const unassignMentor = CatchAsyncError(async (req, res, next) => {
+  try {
+    const courseId = req.params.id;
+    const mentorId = req.body.mentorId;
+    const userId = req?.user._id;
+
+    // Unassign mentors
+    const course = await Course.findOne({ _id: courseId, userId }).catch(
+      (err) => {
+        throw new Error("Course not found");
+      }
+    );
+
+    if (!course) {
+      throw new Error("Course not found");
+    }
+
+    const mentor = await Mentor.findOne({ _id: mentorId }).catch((err) => {
+      throw new Error("Mentor not found");
+    });
+
+    if (!mentor) {
+      throw new Error("Mentor not found");
+    }
+
+    // Check if the mentor is assigned to the course
+    const mentorIndexInCourse = course.mentors.indexOf(mentor._id);
+    if (mentorIndexInCourse === -1) {
+      throw new Error("Mentor is not assigned to the course");
+    }
+
+    // Check if the course is assigned to the mentor
+    const courseIndexInMentor = mentor.courseAssigned.indexOf(course._id);
+    if (courseIndexInMentor === -1) {
+      throw new Error("Course is not assigned to the mentor");
+    }
+
+    // Unassign the mentor from the course
+    course.mentors.splice(mentorIndexInCourse, 1);
+    await course.save().catch((err) => {
+      throw new Error("Error saving course");
+    });
+
+    // Unassign the course from the mentor
+    mentor.courseAssigned.splice(courseIndexInMentor, 1);
+    await mentor.save().catch((err) => {
+      throw new Error("Error saving mentor");
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Mentor has been unassigned from the course",
+      course,
+    });
+  } catch (error) {
+    return next(new ErrorHandler(error.message, 400));
+  }
+});
+
 // published
 const getAllPublishedCourse = CatchAsyncError(async (req, res, next) => {
   try {
@@ -164,6 +223,13 @@ const getCourseById = CatchAsyncError(async (req, res, next) => {
     const courseId = req.params.courseId;
 
     const course = await Course.findById({ _id: courseId })
+      .populate({
+        path: "program_curriculum",
+        populate: {
+          path: "description",
+          model: "ProgramDesc",
+        },
+      })
       .populate("strategy")
       .populate("paymentDetail")
       .populate("mentors");
@@ -193,4 +259,5 @@ module.exports = {
   assignMentor,
   getAllPublishedCourse,
   getCourseById,
+  unassignMentor,
 };

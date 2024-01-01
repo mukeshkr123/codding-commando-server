@@ -6,6 +6,7 @@ const {
   getAllCourses,
   assignMentor,
   getAllPublishedCourse,
+  unassignMentor,
 } = require("../../controllers/course.controller");
 const { isAuthenticated, authorizRoles } = require("../../middleware/auth");
 const paymentRouter = require("./payment-details.routes");
@@ -40,6 +41,14 @@ courseRouter.post(
   isAuthenticated,
   authorizRoles("admin"),
   assignMentor
+);
+
+//unassign mentor
+courseRouter.post(
+  "/:id/unassign-mentor",
+  isAuthenticated,
+  authorizRoles("admin"),
+  unassignMentor
 );
 
 // get courses by userid
