@@ -8,6 +8,7 @@ const {
   publishProgram,
   unpublishProgram,
   deleteProgram,
+  deleteProgramDescription,
 } = require("../../controllers/program-curriculum");
 const programRouter = express.Router();
 
@@ -51,5 +52,12 @@ programRouter.delete(
   isAuthenticated,
   authorizRoles("admin"),
   deleteProgram
+);
+
+programRouter.delete(
+  "/:courseId/program/:programId/:descriptionId",
+  isAuthenticated,
+  authorizRoles("admin"),
+  deleteProgramDescription
 );
 module.exports = programRouter;

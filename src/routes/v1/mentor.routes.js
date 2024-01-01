@@ -53,6 +53,6 @@ mentorRouter.delete(
   deleteMentor
 );
 
-mentorRouter.get("/", isAuthenticated, authorizRoles("student"), getAllMentors);
+mentorRouter.get("/", isAuthenticated, authorizRoles("admin"), getAllMentors);
 
 module.exports = mentorRouter;

@@ -5,6 +5,7 @@ const {
   getCourseBycourseId,
   getAllCourses,
   assignMentor,
+  getAllPublishedCourse,
 } = require("../../controllers/course.controller");
 const { isAuthenticated, authorizRoles } = require("../../middleware/auth");
 const paymentRouter = require("./payment-details.routes");

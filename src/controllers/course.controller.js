@@ -137,10 +137,60 @@ const assignMentor = CatchAsyncError(async (req, res, next) => {
   }
 });
 
+// published
+const getAllPublishedCourse = CatchAsyncError(async (req, res, next) => {
+  try {
+    const courses = await Course.find({
+      isPublished: true,
+    }).select("title description duration imageUrl");
+
+    console.log("courses", courses);
+
+    return res.status(200).json({
+      success: true,
+      message: "Published courses fetched",
+      courses,
+    });
+  } catch (error) {
+    // Log the error for debugging
+    console.error(error);
+    return next(new ErrorHandler(error.message, 400));
+  }
+});
+
+//public
+const getCourseById = CatchAsyncError(async (req, res, next) => {
+  try {
+    const courseId = req.params.courseId;
+
+    const course = await Course.findById({ _id: courseId })
+      .populate("strategy")
+      .populate("paymentDetail")
+      .populate("mentors");
+    if (!course) {
+      return next(new ErrorHandler("Course not found", 404));
+    }
+
+    console.log(course);
+
+    return res.status(200).json({
+      success: true,
+      message: "Course fetched",
+      course,
+    });
+  } catch (error) {
+    // Log the error or handle it as needed
+    console.error(error);
+    return next(new ErrorHandler("Internal Server Error", 500));
+  }
+});
+
 module.exports = {
   createCourse,
   updateCourse,
   getCourseBycourseId,
   getAllCourses,
   assignMentor,
+  getAllPublishedCourse,
+  getCourseById,
 };

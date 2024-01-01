@@ -7,11 +7,18 @@ const curriculumSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "Course",
       required: true,
+      index: true,
     },
-    title: String,
+    title: {
+      type: String,
+      required: true,
+      minlength: 3,
+      maxlength: 255,
+    },
     description: [
       {
-        type: String,
+        type: Schema.Types.ObjectId,
+        ref: "ProgramDesc",
       },
     ],
     isPublished: {
@@ -26,4 +33,23 @@ const curriculumSchema = new Schema(
 
 const Curriculum = mongoose.model("Curriculum", curriculumSchema);
 
-module.exports = Curriculum;
+const program_descriptionSchema = new Schema(
+  {
+    program: {
+      type: Schema.Types.ObjectId,
+      ref: "Curriculum",
+      index: true,
+    },
+    title: {
+      type: String,
+      required: true,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+const ProgramDesc = mongoose.model("ProgramDesc", program_descriptionSchema);
+
+module.exports = { Curriculum, ProgramDesc };

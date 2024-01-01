@@ -4,6 +4,7 @@ const cors = require("cors");
 const morgan = require("morgan");
 const ApiRoutes = require("../routes");
 const ErrorMiddleware = require("../middleware/error");
+const publicRoutes = require("../routes/v1/public.routes");
 const app = express();
 
 // Use Morgan for logging HTTP requests
@@ -14,6 +15,8 @@ app.use(express.json());
 app.use(cors()); // TODO: later setup origin
 // v1 routes
 app.use("/api/v1", ApiRoutes);
+//public routes
+app.use("/api/v1", publicRoutes);
 
 //error middleware
 app.use(ErrorMiddleware);

@@ -36,7 +36,7 @@ const courseSchema = new Schema(
     ],
     paymentDetail: {
       type: Schema.Types.ObjectId,
-      ref: "Payment",
+      ref: "PaymentDetail",
     },
     category: {
       type: Schema.Types.ObjectId,
