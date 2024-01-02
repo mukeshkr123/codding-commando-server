@@ -69,8 +69,6 @@ const getAllStudents = CatchAsyncError(async (req, res, next) => {
       "firstName lastName email phone"
     );
 
-    console.log(students);
-
     return res.status(200).json({
       success: true,
       message: "Students fetched successfully",

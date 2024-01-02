@@ -7,8 +7,6 @@ const createProgram = CatchAsyncError(async (req, res, next) => {
   try {
     const courseId = req.params.id;
 
-    console.log(courseId);
-
     // Create a new curriculum for the given course
     const program = await Curriculum.create({
       course: courseId,
@@ -18,15 +16,11 @@ const createProgram = CatchAsyncError(async (req, res, next) => {
     // Find the course by its ID
     const course = await Course.findById(courseId);
 
-    console.log(course);
-
     if (course) {
       // Add the program to the course's curriculum
       course.program_curriculum.push(program._id);
       await course.save();
     }
-
-    console.log(course);
 
     return res.status(201).json({
       success: true,
@@ -45,9 +39,6 @@ const updateProgram = CatchAsyncError(async (req, res, next) => {
     const programId = req.params.programId;
     const data = req.body;
 
-    console.log(req.params);
-    console.log(data);
-
     let curriculum;
 
     if (data?.description != null) {
@@ -65,7 +56,7 @@ const updateProgram = CatchAsyncError(async (req, res, next) => {
       curriculum.description.push(description._id);
       curriculum = await curriculum.save();
 
-      console.log(curriculum);
+      mentors(curriculum);
     } else {
       // If no description data, update the curriculum with the provided data
       curriculum = await Curriculum.findOneAndUpdate(
@@ -107,7 +98,6 @@ const getProgramById = CatchAsyncError(async (req, res, next) => {
       course: courseId,
       _id: programId,
     }).populate("description");
-    console.log(program);
 
     if (!program) {
       return next(new ErrorHandler("Program not found", 400));
@@ -184,7 +174,6 @@ const deleteProgram = CatchAsyncError(async (req, res, next) => {
       return next(new ErrorHandler("Program not found", 404));
     }
 
-    console.log(`Deleted program: ${deletedProgram}`);
     res
       .status(200)
       .json({ success: true, message: "Program deleted", data: {} });

@@ -7,8 +7,6 @@ const createStrategy = CatchAsyncError(async (req, res, next) => {
   try {
     const courseId = req.params.id;
 
-    console.log(courseId);
-
     const strategy = await Strategy.create({
       course: courseId,
       title: req.body.title,
@@ -20,8 +18,6 @@ const createStrategy = CatchAsyncError(async (req, res, next) => {
       course.strategy.push(strategy._id);
       await course.save();
     }
-
-    console.log(course);
 
     return res.status(201).json({
       success: true,
@@ -39,7 +35,7 @@ const updateStrategy = CatchAsyncError(async (req, res, next) => {
     const data = req.body;
     const strategyId = req.params.strategyId;
 
-    console.log(courseId);
+    mentors(courseId);
 
     const strategy = await Strategy.findOneAndUpdate(
       { _id: strategyId, course: courseId },
@@ -93,9 +89,6 @@ const publishStrategy = CatchAsyncError(async (req, res, next) => {
   try {
     const courseId = req.params.courseId;
     const strategyId = req.params.strategyId;
-
-    console.log(courseId);
-    console.log(strategyId);
 
     const strategy = await Strategy.findOneAndUpdate(
       {
@@ -154,7 +147,6 @@ const deleteStrategy = CatchAsyncError(async (req, res, next) => {
       return next(new ErrorHandler("Strategy not found", 404));
     }
 
-    console.log(`Strategy : ${deletedStrategy}`);
     res
       .status(200)
       .json({ success: true, message: "Strategy deleted", data: {} });

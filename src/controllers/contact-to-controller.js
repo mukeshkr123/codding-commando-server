@@ -1,16 +1,24 @@
+const CatchAsyncError = require("../middleware/catchAsyncError");
 const Contact = require("../models/contact.model");
 const ErrorHandler = require("../utils/ErrorHandler");
 
-const toContact = async (req, res, next) => {
+const toContact = CatchAsyncError(async (req, res, next) => {
   try {
-    const { firstName, lastName, phone, email, message } = req.body;
+    const { firstName, lastName, phone, email, message, type } = req.body;
 
     if (!firstName || !lastName || !phone || !email || !message) {
       throw new Error("Please provide all required fields");
     }
 
     // create a record for contact
-    await Contact.create({ firstName, lastName, phone, email, message });
+    await Contact.create({
+      firstName,
+      lastName,
+      phone,
+      email,
+      message,
+      Type: type,
+    });
 
     // send a thank you email
 
@@ -21,28 +29,34 @@ const toContact = async (req, res, next) => {
   } catch (error) {
     return next(new ErrorHandler(error.message, 400));
   }
-};
+});
 
-const bookDemo = async (req, res, next) => {
+const getAllContacts = CatchAsyncError(async (req, res, next) => {
   try {
-    const { firstName, lastName, phone, email, message } = req.body;
-
-    if (!firstName || !lastName || !phone || !email || !message) {
-      throw new Error("Please provide all required fields");
-    }
-
-    // create a record for contact
-    await Contact.create({ firstName, lastName, phone, email, message });
-
-    // send a thank you email
+    const contacts = await Contact.find({});
 
     return res.status(200).json({
       success: true,
-      message: "Message sent successfully",
+      message: "Data fetched successfully",
+      contacts,
     });
   } catch (error) {
     return next(new ErrorHandler(error.message, 400));
   }
-};
+});
 
-module.exports = { toContact, bookDemo };
+const getContactById = CatchAsyncError(async (req, res, next) => {
+  try {
+    const contact = await Contact.findById(req.params.id);
+
+    return res.status(200).json({
+      success: true,
+      message: "Feteched Successfully",
+      contact,
+    });
+  } catch (error) {
+    return next(new ErrorHandler(error.message, 400));
+  }
+});
+
+module.exports = { toContact, getAllContacts, getContactById };

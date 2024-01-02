@@ -78,8 +78,6 @@ const publishMentor = CatchAsyncError(async (req, res, next) => {
   try {
     const mentorId = req.params.mentorId;
 
-    console.log(mentorId);
-
     const mentor = await Mentor.findOneAndUpdate(
       {
         _id: mentorId,
@@ -132,7 +130,6 @@ const deleteMentor = CatchAsyncError(async (req, res, next) => {
       return next(new ErrorHandler("Mentor not found", 404));
     }
 
-    console.log(`Mentor : ${deletedMentor}`);
     res
       .status(200)
       .json({ success: true, message: "Mentor deleted", data: {} });

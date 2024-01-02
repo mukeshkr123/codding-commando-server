@@ -30,7 +30,6 @@ const registerUserService = async (userData) => {
     // activation token and code
     const activationToken = createActivationToken(user);
     const activationCode = activationToken.activationCode;
-    console.log(activationCode);
 
     const data = { user: { name: user.firstName }, activationCode };
     const html = await ejs.renderFile(
@@ -69,7 +68,6 @@ const activateUserService = async (activationData) => {
 
     //decode user
     const newUser = jwt.verify(activationToken, process.env.ACTIVATION_SECRET);
-    console.log(newUser.activationCode);
 
     //verify activation code
     if (newUser.activationCode !== activationCode) {
@@ -92,8 +90,6 @@ const activateUserService = async (activationData) => {
       email,
       password,
     });
-
-    console.log(user);
 
     return user;
   } catch (error) {

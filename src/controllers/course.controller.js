@@ -46,8 +46,6 @@ const getCourseBycourseId = CatchAsyncError(async (req, res, next) => {
       .populate("strategy")
       .populate("mentors");
 
-    console.log(course);
-
     if (!course) {
       throw next(new ErrorHandler("Course not found", 404));
     }
@@ -203,8 +201,6 @@ const getAllPublishedCourse = CatchAsyncError(async (req, res, next) => {
       isPublished: true,
     }).select("title description duration imageUrl");
 
-    console.log("courses", courses);
-
     return res.status(200).json({
       success: true,
       message: "Published courses fetched",
@@ -236,8 +232,6 @@ const getCourseById = CatchAsyncError(async (req, res, next) => {
     if (!course) {
       return next(new ErrorHandler("Course not found", 404));
     }
-
-    console.log(course);
 
     return res.status(200).json({
       success: true,

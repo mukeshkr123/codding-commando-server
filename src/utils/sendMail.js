@@ -5,7 +5,6 @@ const ejs = require("ejs");
 const path = require("path");
 
 const sendMail = async (options) => {
-  console.log(options);
   const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST,
     port: parseInt(process.env.SMTP_PORT || "587"),
@@ -32,7 +31,6 @@ const sendMail = async (options) => {
   };
 
   await transporter.sendMail(mailOptions);
-  console.log("success");
 };
 
 module.exports = sendMail;

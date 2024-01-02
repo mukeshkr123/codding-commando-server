@@ -89,7 +89,7 @@ userSchema.pre("save", async function (next) {
     return next();
   }
   this.password = await bcrypt.hash(this.password, saltRounds);
-  console.log(`User ${this.email} created/updated at ${new Date()}`);
+  mentors(`User ${this.email} created/updated at ${new Date()}`);
   return next();
 });
 

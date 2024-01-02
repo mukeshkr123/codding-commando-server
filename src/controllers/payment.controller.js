@@ -118,8 +118,6 @@ const verifyPaymentOrder = CatchAsyncError(async (req, res, next) => {
 
     const courseId = req.params.courseId;
 
-    console.log(courseId);
-
     const body = razorpay_order_id + "|" + razorpay_payment_id;
 
     const expectedSignature = crypto

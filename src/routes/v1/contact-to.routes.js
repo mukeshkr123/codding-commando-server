@@ -1,11 +1,13 @@
 const express = require("express");
 const {
   toContact,
-  bookDemo,
+  getAllContacts,
+  getContactById,
 } = require("../../controllers/contact-to-controller");
 const contactToRouter = express.Router();
 
 contactToRouter.post("/message", toContact);
-contactToRouter.post("/book-demo", bookDemo);
+contactToRouter.get("/get-all", getAllContacts);
+contactToRouter.get("/:id", getContactById);
 
 module.exports = contactToRouter;

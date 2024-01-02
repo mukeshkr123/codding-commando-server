@@ -22,8 +22,6 @@ const createCourseService = async (user, courseData) => {
       course: course._id,
     });
 
-    console.log(payment);
-
     // Link the payment to the course
     course.paymentDetail = payment._id;
 
@@ -41,11 +39,6 @@ const updateCourseService = async (courseId, { _id: userId }, values) => {
     if (!userId) {
       throw new Error("Unauthorized");
     }
-
-    console.log(values);
-
-    console.log("courseId", courseId);
-    console.log("userId", userId);
 
     const course = await Course.findOneAndUpdate(
       { _id: courseId, userId },
