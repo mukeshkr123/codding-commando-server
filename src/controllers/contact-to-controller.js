@@ -31,8 +31,6 @@ const toContact = CatchAsyncError(async (req, res, next) => {
     const data = { user: { name: firstName } };
     const template = type === "Contact" ? "contact-mail.ejs" : "demo-mail.ejs";
 
-    console.log(template);
-
     try {
       await sendMail({
         email: contact.email,

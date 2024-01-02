@@ -79,9 +79,30 @@ const getAllStudents = CatchAsyncError(async (req, res, next) => {
   }
 });
 
+const getUserById = CatchAsyncError(async (req, res, next) => {
+  try {
+    const studentId = req.params.studentId;
+
+    const user = await User.findById(studentId);
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "User fetched successfully",
+      user,
+    });
+  } catch (error) {
+    return next(new ErrorHandler(error.message, 400));
+  }
+});
+
 module.exports = {
   registerUser,
   activateUser,
   loginUser,
   getAllStudents,
+  getUserById,
 };
