@@ -55,8 +55,11 @@ const userSchema = new mongoose.Schema(
     },
     enrollments: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Course",
+        courseId: { type: mongoose.Schema.Types.ObjectId, ref: "Course" },
+        enrolledAt: {
+          type: Date,
+          default: Date.now(),
+        },
       },
     ],
     paymentHistory: [
@@ -71,7 +74,7 @@ const userSchema = new mongoose.Schema(
         order_id: {
           type: String,
         },
-        timestamps: {
+        purchasedAt: {
           type: Date,
           default: Date.now(),
         },

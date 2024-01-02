@@ -55,6 +55,7 @@ const updatePaymentDetails = CatchAsyncError(async (req, res, next) => {
     return next(new ErrorHandler(error.message, 400));
   }
 });
+
 const createPaymentOrder = CatchAsyncError(async (req, res, next) => {
   try {
     const courseId = req.params.courseId;
@@ -68,6 +69,22 @@ const createPaymentOrder = CatchAsyncError(async (req, res, next) => {
 
     if (!course) {
       throw new Error("Course not found");
+    }
+
+    const userEnrolled = course.enrollments.some(
+      (enrollment) => enrollment.student.toString() == user.id
+    );
+
+    if (userEnrolled) {
+      throw new Error("You have already enrolled in this course");
+    }
+
+    const enrolledALready = user.enrollments.some(
+      (enrollment) => enrollment.courseId.toString() === courseId
+    );
+
+    if (enrolledALready) {
+      throw new Error("You have already enrolled in this course");
     }
 
     const paymentDetail = await PaymentDetail.findById({
@@ -94,7 +111,7 @@ const createPaymentOrder = CatchAsyncError(async (req, res, next) => {
         userId: user.id,
         courseId: course.id,
         imageUrl: course.imageUrl,
-        description: paymentDetail.description,
+        description: course.title,
       },
     };
 
@@ -129,9 +146,23 @@ const verifyPaymentOrder = CatchAsyncError(async (req, res, next) => {
 
     if (isAuthentic) {
       // assign course to the user
-      // const user = await User.findById({ _id: req.user.id });
-      // user.enrollments.push(courseId);
-      // user.save();
+      const user = await User.findById(req.user.id);
+
+      const data = {
+        courseId: courseId,
+        order_id: razorpay_order_id,
+        payment_id: razorpay_payment_id,
+      };
+
+      user.paymentHistory.push(data);
+      user.enrollments.push({ courseId: courseId });
+      await user.save();
+
+      //save the user in course
+      const course = await Course.findById(courseId);
+
+      course.enrollments.push({ student: user._id });
+      await course.save();
     } else {
       return res.status(400).json({
         success: false,

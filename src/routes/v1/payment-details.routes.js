@@ -22,7 +22,7 @@ paymentRouter.get(
 );
 
 //create payment order
-paymentRouter.get(
+paymentRouter.post(
   "/:courseId/payment/create-order",
   isAuthenticated,
   createPaymentOrder

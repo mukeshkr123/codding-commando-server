@@ -3,6 +3,9 @@ const userRouter = require("./v1/user.routes");
 const contactRouter = require("./v1/contact-to.routes");
 const courseRouter = require("./v1/course.routes");
 const mentorRouter = require("./v1/mentor.routes");
+const {
+  getAllPublishedCoursesByAdmin,
+} = require("../controllers/course.controller");
 const router = express.Router();
 
 // user routes
