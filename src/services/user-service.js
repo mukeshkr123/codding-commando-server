@@ -93,7 +93,12 @@ const activateUserService = async (activationData) => {
 
     return user;
   } catch (error) {
-    throw new ErrorHandler(error.message);
+    if (error.name === "TokenExpiredError") {
+      // Change the error message for expired token
+      throw new Error("OTP expired");
+    } else {
+      throw new Error(error.message);
+    }
   }
 };
 

@@ -1,62 +1,22 @@
 const CatchAsyncError = require("../middleware/catchAsyncError");
-const Contact = require("../models/contact.model");
-const ErrorHandler = require("../utils/ErrorHandler");
-const sendMail = require("../utils/sendMail");
-const ejs = require("ejs");
-const path = require("path");
+const contactService = require("../services/contact-service");
 
 const toContact = CatchAsyncError(async (req, res, next) => {
   try {
-    const { firstName, lastName, phone, email, message, type } = req.body;
+    const contact = await contactService.createContact(req.body);
 
-    if (!firstName || !lastName || !phone || !email || !message || !type) {
-      throw new Error("Please provide all required fields");
-    }
-
-    // create a record for contact
-    const contact = await Contact.create({
-      firstName,
-      lastName,
-      phone,
-      email,
-      message,
-      Type: type,
+    return res.status(200).json({
+      success: true,
+      message: "Message sent successfully",
     });
-
-    if (!contact) {
-      throw new Error("Please provide all required fields");
-    }
-
-    // send a thank you email
-    const data = { user: { name: firstName } };
-    const template = type === "Contact" ? "contact-mail.ejs" : "demo-mail.ejs";
-
-    try {
-      await sendMail({
-        email: contact.email,
-        subject: "Contact Information",
-        template: template,
-        data,
-      });
-
-      return res.status(200).json({
-        success: true,
-        message: "Message sent successfully",
-      });
-    } catch (error) {
-      throw new ErrorHandler(
-        "Error sending Thank you email: " + error.message,
-        500
-      );
-    }
   } catch (error) {
-    return next(new ErrorHandler(error.message, 400));
+    return next(error);
   }
 });
 
 const getAllContacts = CatchAsyncError(async (req, res, next) => {
   try {
-    const contacts = await Contact.find({});
+    const contacts = await contactService.getAllContacts();
 
     return res.status(200).json({
       success: true,
@@ -64,21 +24,21 @@ const getAllContacts = CatchAsyncError(async (req, res, next) => {
       contacts,
     });
   } catch (error) {
-    return next(new ErrorHandler(error.message, 400));
+    return next(error);
   }
 });
 
 const getContactById = CatchAsyncError(async (req, res, next) => {
   try {
-    const contact = await Contact.findById(req.params.id);
+    const contact = await contactService.getContactById(req.params.id);
 
     return res.status(200).json({
       success: true,
-      message: "Feteched Successfully",
+      message: "Fetched Successfully",
       contact,
     });
   } catch (error) {
-    return next(new ErrorHandler(error.message, 400));
+    return next(error);
   }
 });
 

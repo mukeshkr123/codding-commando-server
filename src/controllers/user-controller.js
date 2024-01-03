@@ -1,3 +1,4 @@
+const { isValidObjectId } = require("mongoose");
 const CatchAsyncError = require("../middleware/catchAsyncError.js");
 const User = require("../models/user.model.js");
 const {
@@ -82,6 +83,9 @@ const getAllStudents = CatchAsyncError(async (req, res, next) => {
 const getUserById = CatchAsyncError(async (req, res, next) => {
   try {
     const studentId = req.params.studentId;
+    if (!isValidObjectId(studentId)) {
+      throw new ErrorHandler("Inavalid user id ", 400);
+    }
 
     const user = await User.findById(studentId);
 

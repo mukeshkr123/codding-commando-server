@@ -6,6 +6,7 @@ const {
   createCourseService,
   updateCourseService,
 } = require("../services/course-service");
+const { isValidObjectId } = require("../utils");
 const ErrorHandler = require("../utils/ErrorHandler");
 
 const createCourse = CatchAsyncError(async (req, res, next) => {
@@ -214,10 +215,14 @@ const getAllPublishedCourse = CatchAsyncError(async (req, res, next) => {
   }
 });
 
-//public
 const getCourseById = CatchAsyncError(async (req, res, next) => {
+  //TODO: separate to service
   try {
     const courseId = req.params.courseId;
+
+    if (!isValidObjectId(courseId)) {
+      return next(new ErrorHandler("Invalid Course ID", 400));
+    }
 
     const course = await Course.findById({ _id: courseId })
       .populate({
