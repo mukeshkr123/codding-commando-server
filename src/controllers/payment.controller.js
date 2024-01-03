@@ -131,8 +131,14 @@ const createPaymentOrder = CatchAsyncError(async (req, res, next) => {
 
 const verifyPaymentOrder = CatchAsyncError(async (req, res, next) => {
   try {
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
-      req.body;
+    const {
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature,
+      amount,
+    } = req.body;
+
+    console.log(amount);
 
     const courseId = req.params.courseId;
 
@@ -167,7 +173,10 @@ const verifyPaymentOrder = CatchAsyncError(async (req, res, next) => {
       const purchase = await Purchase.create({
         courseId: courseId,
         userId: user._id,
+        amount: amount,
       });
+
+      console.log(purchase);
     } else {
       return res.status(400).json({
         success: false,

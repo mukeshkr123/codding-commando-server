@@ -10,6 +10,9 @@ const purchaseSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Course",
     },
+    amount: {
+      type: Number,
+    },
   },
   {
     timestamps: true,
