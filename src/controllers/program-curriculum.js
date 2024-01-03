@@ -55,8 +55,6 @@ const updateProgram = CatchAsyncError(async (req, res, next) => {
 
       curriculum.description.push(description._id);
       curriculum = await curriculum.save();
-
-      mentors(curriculum);
     } else {
       // If no description data, update the curriculum with the provided data
       curriculum = await Curriculum.findOneAndUpdate(

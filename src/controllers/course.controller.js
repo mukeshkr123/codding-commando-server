@@ -230,6 +230,7 @@ const getCourseById = CatchAsyncError(async (req, res, next) => {
       .populate("strategy")
       .populate("paymentDetail")
       .populate("mentors");
+
     if (!course) {
       return next(new ErrorHandler("Course not found", 404));
     }
@@ -240,8 +241,6 @@ const getCourseById = CatchAsyncError(async (req, res, next) => {
       course,
     });
   } catch (error) {
-    // Log the error or handle it as needed
-    console.error(error);
     return next(new ErrorHandler("Internal Server Error", 500));
   }
 });
@@ -280,6 +279,65 @@ const getEnrolledCourses = CatchAsyncError(async (req, res, next) => {
   }
 });
 
+const publishCourse = CatchAsyncError(async (req, res, next) => {
+  try {
+    const courseId = req.params.courseId;
+    console.log(courseId);
+
+    const course = await Course.findOneAndUpdate(
+      {
+        _id: courseId,
+      },
+      { $set: { isPublished: true } },
+      { new: true }
+    );
+
+    res
+      .status(200)
+      .json({ success: true, message: "Course published", data: course });
+  } catch (error) {
+    return next(new ErrorHandler(error.message, 400));
+  }
+});
+
+const unpublishCourse = CatchAsyncError(async (req, res, next) => {
+  try {
+    const courseId = req.params.courseId;
+
+    const course = await Course.findOneAndUpdate(
+      {
+        _id: courseId,
+      },
+      { $set: { isPublished: false } },
+      { new: true }
+    );
+
+    res
+      .status(200)
+      .json({ success: true, message: "Course unpublished", data: course });
+  } catch (error) {
+    return next(new ErrorHandler(error.message, 400));
+  }
+});
+
+const deleteCourse = CatchAsyncError(async (req, res, next) => {
+  try {
+    const courseId = req.params.courseId;
+
+    const deleteCourse = await Course.findOneAndDelete(courseId);
+
+    if (!deleteCourse) {
+      return next(new ErrorHandler("Course not found", 404));
+    }
+
+    res
+      .status(200)
+      .json({ success: true, message: "Course deleted", data: {} });
+  } catch (error) {
+    return next(new ErrorHandler(error.message, 400));
+  }
+});
+
 module.exports = {
   createCourse,
   updateCourse,
@@ -290,4 +348,7 @@ module.exports = {
   getCourseById,
   unassignMentor,
   getEnrolledCourses,
+  publishCourse,
+  deleteCourse,
+  unpublishCourse,
 };

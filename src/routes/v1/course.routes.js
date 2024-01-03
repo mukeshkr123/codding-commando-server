@@ -8,6 +8,9 @@ const {
   getAllPublishedCourse,
   unassignMentor,
   getEnrolledCourses,
+  publishCourse,
+  unpublishCourse,
+  deleteCourse,
 } = require("../../controllers/course.controller");
 const { isAuthenticated, authorizRoles } = require("../../middleware/auth");
 const paymentRouter = require("./payment-details.routes");
@@ -50,6 +53,25 @@ courseRouter.post(
   isAuthenticated,
   authorizRoles("admin"),
   unassignMentor
+);
+
+courseRouter.patch(
+  "/:courseId/publish",
+  isAuthenticated,
+  authorizRoles("admin"),
+  publishCourse
+);
+courseRouter.patch(
+  "/:courseId/unpublish",
+  isAuthenticated,
+  authorizRoles("admin"),
+  unpublishCourse
+);
+courseRouter.delete(
+  "/:courseId/delete",
+  isAuthenticated,
+  authorizRoles("admin"),
+  deleteCourse
 );
 
 // get courses by userid

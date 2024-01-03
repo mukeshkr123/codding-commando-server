@@ -6,8 +6,8 @@ const ErrorMiddleware = (err, req, res, next) => {
 
   // Wrong MongoDB error (CastError)
   if (err.name === "CastError") {
-    const message = `Resource not found: ${err.path}`;
-    err = new ErrorHandler(message, 404); // Use 404 for "Not Found" errors
+    const message = `Invalid ${err.path}: ${err.value}`;
+    err = new ErrorHandler(message, 400); // Use 400 for "Bad Request" errors
   }
 
   // Duplicate key error

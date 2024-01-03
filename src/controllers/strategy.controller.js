@@ -35,8 +35,6 @@ const updateStrategy = CatchAsyncError(async (req, res, next) => {
     const data = req.body;
     const strategyId = req.params.strategyId;
 
-    mentors(courseId);
-
     const strategy = await Strategy.findOneAndUpdate(
       { _id: strategyId, course: courseId },
       { $set: data },
