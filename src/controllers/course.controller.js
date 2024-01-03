@@ -1,6 +1,7 @@
 const CatchAsyncError = require("../middleware/catchAsyncError");
 const Course = require("../models/course.model");
 const Mentor = require("../models/mentors.model");
+const User = require("../models/user.model");
 const {
   createCourseService,
   updateCourseService,
@@ -245,6 +246,40 @@ const getCourseById = CatchAsyncError(async (req, res, next) => {
   }
 });
 
+const getEnrolledCourses = CatchAsyncError(async (req, res, next) => {
+  try {
+    console.log("req.user.id");
+
+    // Use findById with populate to fetch user and populate the enrollments field
+    const user = await User.findById(req.user.id).populate({
+      path: "enrollments.courseId",
+      select: "id title description duration",
+    });
+
+    console.log("user", user);
+
+    // Now the user object should have enrollments populated with course details
+    const enrolledCourses = user.enrollments.map((enrollment) => {
+      const course = {
+        _id: enrollment.courseId.id,
+        title: enrollment.courseId.title,
+        description: enrollment.courseId.description,
+        duration: enrollment.courseId.duration,
+      };
+      return course;
+    });
+
+    console.log("courses", enrolledCourses);
+
+    res.status(200).json({
+      success: true,
+      courses: enrolledCourses,
+    });
+  } catch (error) {
+    return next(new ErrorHandler("Internal Server Error", 500));
+  }
+});
+
 module.exports = {
   createCourse,
   updateCourse,
@@ -254,4 +289,5 @@ module.exports = {
   getAllPublishedCourse,
   getCourseById,
   unassignMentor,
+  getEnrolledCourses,
 };

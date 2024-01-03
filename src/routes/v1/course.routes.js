@@ -7,6 +7,7 @@ const {
   assignMentor,
   getAllPublishedCourse,
   unassignMentor,
+  getEnrolledCourses,
 } = require("../../controllers/course.controller");
 const { isAuthenticated, authorizRoles } = require("../../middleware/auth");
 const paymentRouter = require("./payment-details.routes");

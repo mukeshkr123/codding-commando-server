@@ -7,6 +7,7 @@ const shortid = require("shortid");
 const crypto = require("crypto");
 const Course = require("../models/course.model");
 const User = require("../models/user.model");
+const Purchase = require("../models/purchase");
 
 const getPaymentDetails = CatchAsyncError(async (req, res, next) => {
   try {
@@ -160,9 +161,13 @@ const verifyPaymentOrder = CatchAsyncError(async (req, res, next) => {
 
       //save the user in course
       const course = await Course.findById(courseId);
-
       course.enrollments.push({ student: user._id });
       await course.save();
+
+      const purchase = await Purchase.create({
+        courseId: courseId,
+        userId: user._id,
+      });
     } else {
       return res.status(400).json({
         success: false,

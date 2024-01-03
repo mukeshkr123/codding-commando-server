@@ -4,10 +4,6 @@ const dbConnect = require("./config/dbConnect");
 
 const PORT = process.env.PORT || 8000;
 
-app.use("/", (req, res) => {
-  res.send("Welcome");
-});
-
 // create server
 app.listen(PORT, () => {
   // connect to database'
