@@ -5,6 +5,7 @@ const {
   loginUser,
   getAllStudents,
   getUserById,
+  getUserByToken,
 } = require("../../controllers/user-controller");
 const { isAuthenticated, authorizRoles } = require("../../middleware/auth");
 const userRouter = express.Router();
@@ -24,5 +25,6 @@ userRouter.get(
 );
 
 userRouter.get("/students/:studentId", getUserById);
+userRouter.get("/session", isAuthenticated, getUserByToken);
 
 module.exports = userRouter;

@@ -24,7 +24,7 @@ const ErrorMiddleware = (err, req, res, next) => {
 
   // JWT expired error (TokenExpiredError)
   if (err.name === "TokenExpiredError") {
-    const message = "Token has expired, please login again";
+    const message = "Session expired, please login again";
     err = new ErrorHandler(message, 401); // Use 401 for "Unauthorized" errors
   }
 

@@ -62,6 +62,9 @@ const courseSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    banner: {
+      type: String,
+    },
   },
   {
     timestamps: true,

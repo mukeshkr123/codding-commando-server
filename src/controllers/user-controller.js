@@ -103,10 +103,32 @@ const getUserById = CatchAsyncError(async (req, res, next) => {
   }
 });
 
+const getUserByToken = CatchAsyncError(async (req, res) => {
+  try {
+    const user = req.user;
+    if (!user) {
+      throw new Error("User not found");
+    }
+    res.status(200).json({
+      success: true,
+      user: {
+        name: user?.firstName + " " + user?.lastName,
+        email: user?.email,
+        phone: user?.phone,
+        role: user?.role,
+        avatar: user?.avatar,
+      },
+    });
+  } catch (error) {
+    return next(new ErrorHandler(error.message, 400));
+  }
+});
+
 module.exports = {
   registerUser,
   activateUser,
   loginUser,
   getAllStudents,
   getUserById,
+  getUserByToken,
 };

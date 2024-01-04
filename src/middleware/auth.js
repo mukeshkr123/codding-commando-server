@@ -23,7 +23,7 @@ const isAuthenticated = CatchAsyncError(async (req, res, next) => {
 
       if (!decoded || decoded.exp <= Date.now() / 1000) {
         return next(
-          new ErrorHandler("Access token is expired or not valid", 401)
+          new ErrorHandler("Session expired, please log in again", 401)
         );
       }
 
@@ -31,17 +31,14 @@ const isAuthenticated = CatchAsyncError(async (req, res, next) => {
 
       if (!user) {
         return next(
-          new ErrorHandler(
-            "Unauthorized: Token expired, please log in again",
-            401
-          )
+          new ErrorHandler("Session expired, please log in again", 401)
         );
       }
 
       req.user = user;
       next();
     } catch (err) {
-      return next(new ErrorHandler("Unauthorized: Token is not valid", 401));
+      return next(new ErrorHandler("Session Expired: Please Login again", 401));
     }
   } else {
     return next(
