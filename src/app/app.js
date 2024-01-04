@@ -12,15 +12,8 @@ const rateLimit = require("express-rate-limit");
 app.use(morgan("dev"));
 // body parser
 app.use(express.json());
-
-// CORS middleware
-const corsOptions = {
-  origin: process.env.ORIGIN,
-  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-  credentials: true, // Enable credentials (cookies, Authorization headers, etc.)
-  optionsSuccessStatus: 204, // Respond with a 204 status code for preflight requests
-};
-app.use(cors(corsOptions));
+// cors
+app.use(cors());
 
 // Rate limiting middleware
 const limiter = rateLimit({
@@ -28,7 +21,6 @@ const limiter = rateLimit({
   max: 100, // limit each IP to 100 requests per windowMs
 });
 app.use(limiter);
-
 // v1 routes
 app.use("/api/v1", ApiRoutes);
 //public routes
