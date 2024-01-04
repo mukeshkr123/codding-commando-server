@@ -252,15 +252,11 @@ const getCourseById = CatchAsyncError(async (req, res, next) => {
 
 const getEnrolledCourses = CatchAsyncError(async (req, res, next) => {
   try {
-    console.log("req.user.id");
-
     // Use findById with populate to fetch user and populate the enrollments field
     const user = await User.findById(req.user.id).populate({
       path: "enrollments.courseId",
       select: "id title description duration",
     });
-
-    console.log("user", user);
 
     // Now the user object should have enrollments populated with course details
     const enrolledCourses = user.enrollments.map((enrollment) => {
@@ -272,8 +268,6 @@ const getEnrolledCourses = CatchAsyncError(async (req, res, next) => {
       };
       return course;
     });
-
-    console.log("courses", enrolledCourses);
 
     res.status(200).json({
       success: true,
@@ -287,7 +281,6 @@ const getEnrolledCourses = CatchAsyncError(async (req, res, next) => {
 const publishCourse = CatchAsyncError(async (req, res, next) => {
   try {
     const courseId = req.params.courseId;
-    console.log(courseId);
 
     const course = await Course.findOneAndUpdate(
       {

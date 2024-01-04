@@ -138,8 +138,6 @@ const verifyPaymentOrder = CatchAsyncError(async (req, res, next) => {
       amount,
     } = req.body;
 
-    console.log(amount);
-
     const courseId = req.params.courseId;
 
     const body = razorpay_order_id + "|" + razorpay_payment_id;
@@ -175,8 +173,6 @@ const verifyPaymentOrder = CatchAsyncError(async (req, res, next) => {
         userId: user._id,
         amount: amount,
       });
-
-      console.log(purchase);
     } else {
       return res.status(400).json({
         success: false,
