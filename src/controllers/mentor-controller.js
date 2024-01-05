@@ -138,6 +138,18 @@ const deleteMentor = CatchAsyncError(async (req, res, next) => {
   }
 });
 
+const getAllMentorsByUser = CatchAsyncError(async (req, res) => {
+  try {
+    const mentors = await Mentor.find().select("name description imageUrl");
+    return res.status(200).json({
+      success: true,
+      mentors,
+    });
+  } catch (error) {
+    return next(new ErrorHandler(error.message, 400));
+  }
+});
+
 module.exports = {
   createMentor,
   getMentorsById,
@@ -146,4 +158,5 @@ module.exports = {
   publishMentor,
   unpublishMentor,
   deleteMentor,
+  getAllMentorsByUser,
 };

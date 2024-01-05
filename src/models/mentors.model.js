@@ -27,6 +27,11 @@ const mentorSchema = new mongoose.Schema(
     imageUrl: {
       type: String,
     },
+    role: {
+      type: String,
+      enum: ["mentor", "member"],
+      default: "mentor",
+    },
     courseAssigned: [
       {
         type: mongoose.Schema.Types.ObjectId,

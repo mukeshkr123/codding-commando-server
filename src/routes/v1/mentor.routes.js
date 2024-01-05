@@ -8,6 +8,7 @@ const {
   publishMentor,
   unpublishMentor,
   deleteMentor,
+  getAllMentorsByUser,
 } = require("../../controllers/mentor-controller");
 const mentorRouter = express.Router();
 

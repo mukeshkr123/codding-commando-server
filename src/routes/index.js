@@ -6,6 +6,7 @@ const mentorRouter = require("./v1/mentor.routes");
 const { getEnrolledCourses } = require("../controllers/course.controller");
 const { isAuthenticated } = require("../middleware/auth");
 const analyticsRouter = require("./v1/analytics.routes");
+const { getAllMentorsByUser } = require("../controllers/mentor-controller");
 const router = express.Router();
 
 // user routes
@@ -19,5 +20,6 @@ router.get("/enrolled-courses", isAuthenticated, getEnrolledCourses);
 router.use("/send", contactRouter);
 router.use("/mentors", mentorRouter);
 router.use("/", analyticsRouter);
+router.get("/teachers", getAllMentorsByUser);
 
 module.exports = router;

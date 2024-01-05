@@ -1,7 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-const morgan = require("morgan");
+// const morgan = require("morgan");
 const ApiRoutes = require("../routes");
 const ErrorMiddleware = require("../middleware/error");
 const publicRoutes = require("../routes/v1/public.routes");
@@ -9,7 +9,7 @@ const app = express();
 const rateLimit = require("express-rate-limit");
 
 // Use Morgan for logging HTTP requests
-app.use(morgan("dev"));
+// app.use(morgan("dev"));
 // body parser
 app.use(express.json());
 // cors
@@ -18,7 +18,7 @@ app.use(cors());
 // Rate limiting middleware
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
+  max: 200, // limit each IP to 100 requests per windowMs
 });
 app.use(limiter);
 // v1 routes
