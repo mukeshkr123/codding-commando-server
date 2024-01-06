@@ -179,7 +179,7 @@ const verifyPaymentOrder = CatchAsyncError(async (req, res, next) => {
       };
 
       user.paymentHistory.push(data);
-      user.enrollments.push({ courseId: courseId });
+      user.enrollments.push({ courseId: courseId, paymentType: method });
       await user.save();
 
       //save the user in course
@@ -205,7 +205,36 @@ const verifyPaymentOrder = CatchAsyncError(async (req, res, next) => {
       message: "Payment created successfully",
     });
   } catch (error) {
-    console.error("Error in verifying payment order:", error);
+    return next(new ErrorHandler(error.message, 400));
+  }
+});
+
+const getAllPuchase = CatchAsyncError(async (req, res, next) => {
+  try {
+    const response = await Purchase.find()
+      .populate({
+        path: "userId",
+        select: "firstName email",
+      })
+      .populate({
+        path: "courseId",
+        select: "title",
+      });
+
+    const results = response.map((purchase) => ({
+      name: purchase.userId.firstName,
+      email: purchase.userId.email,
+      amount: purchase.amount,
+      courseTitle: purchase.courseId.title,
+      createdAt: purchase.createdAt,
+      method: purchase.method,
+    }));
+
+    return res.status(200).json({
+      success: true,
+      results,
+    });
+  } catch (error) {
     return next(new ErrorHandler(error.message, 400));
   }
 });
@@ -215,4 +244,5 @@ module.exports = {
   getPaymentDetails,
   createPaymentOrder,
   verifyPaymentOrder,
+  getAllPuchase,
 };

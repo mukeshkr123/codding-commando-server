@@ -53,7 +53,9 @@ const getContactById = async (id) => {
     if (!isValidObjectId(id)) {
       throw new ErrorHandler("Invalid contact ID", 400);
     }
-    return await Contact.findById(id);
+    return await Contact.findByIdAndUpdate(id, {
+      seen: true,
+    });
   } catch (error) {
     throw new ErrorHandler(error.message, 500);
   }

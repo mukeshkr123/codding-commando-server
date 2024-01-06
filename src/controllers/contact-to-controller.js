@@ -42,4 +42,23 @@ const getContactById = CatchAsyncError(async (req, res, next) => {
   }
 });
 
-module.exports = { toContact, getAllContacts, getContactById };
+const markAsReadById = CatchAsyncError(async (req, res, next) => {
+  try {
+    const contact = await contactService.markAsRead(req.params.id, req.body);
+
+    return res.status(200).json({
+      success: true,
+      message: "Mask as read",
+      contact,
+    });
+  } catch (error) {
+    return next(error);
+  }
+});
+
+module.exports = {
+  toContact,
+  getAllContacts,
+  getContactById,
+  markAsReadById,
+};

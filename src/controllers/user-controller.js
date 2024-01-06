@@ -60,7 +60,7 @@ const loginUser = async (req, res, next) => {
 const getAllStudents = CatchAsyncError(async (req, res, next) => {
   try {
     const students = await User.find({ role: "student" }).select(
-      "firstName lastName email phone"
+      "firstName lastName email phone createdAt"
     );
 
     return res.status(200).json({
@@ -80,7 +80,15 @@ const getUserById = CatchAsyncError(async (req, res, next) => {
       throw new ErrorHandler("Inavalid user id ", 400);
     }
 
-    const user = await User.findById(studentId);
+    const user = await User.findById(studentId)
+      .populate({
+        path: "enrollments.courseId",
+        select: "title",
+      })
+      .populate({
+        path: "paymentHistory.courseId",
+        select: "title",
+      });
 
     if (!user) {
       throw new Error("User not found");
@@ -119,6 +127,58 @@ const getUserByToken = CatchAsyncError(async (req, res) => {
   }
 });
 
+const blockUser = CatchAsyncError(async (req, res, next) => {
+  try {
+    const studentId = req.params.studentId;
+    if (!isValidObjectId(studentId)) {
+      throw new ErrorHandler("Invalid user id", 400);
+    }
+
+    const user = await User.findByIdAndUpdate(
+      studentId,
+      { isBlocked: true },
+      { new: true }
+    );
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "User blocked successfully",
+    });
+  } catch (error) {
+    return next(new ErrorHandler(error.message, 400));
+  }
+});
+
+const unblockUser = CatchAsyncError(async (req, res, next) => {
+  try {
+    const studentId = req.params.studentId;
+    if (!isValidObjectId(studentId)) {
+      throw new ErrorHandler("Invalid user id", 400);
+    }
+
+    const user = await User.findByIdAndUpdate(
+      studentId,
+      { isBlocked: false },
+      { new: true }
+    );
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "User unblocked successfully",
+    });
+  } catch (error) {
+    return next(new ErrorHandler(error.message, 400));
+  }
+});
+
 module.exports = {
   registerUser,
   activateUser,
@@ -126,4 +186,6 @@ module.exports = {
   getAllStudents,
   getUserById,
   getUserByToken,
+  blockUser,
+  unblockUser,
 };

@@ -3,6 +3,7 @@ const {
   toContact,
   getAllContacts,
   getContactById,
+  markAsReadById,
 } = require("../../controllers/contact-to-controller");
 const { isAuthenticated, authorizRoles } = require("../../middleware/auth");
 const contactToRouter = express.Router();
@@ -19,6 +20,13 @@ contactToRouter.get(
   isAuthenticated,
   authorizRoles("admin"),
   getContactById
+);
+
+contactToRouter.post(
+  "/:id/mark-as-read",
+  isAuthenticated,
+  authorizRoles("admin"),
+  markAsReadById
 );
 
 module.exports = contactToRouter;

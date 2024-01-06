@@ -6,6 +6,8 @@ const {
   getAllStudents,
   getUserById,
   getUserByToken,
+  blockUser,
+  unblockUser,
 } = require("../../controllers/user-controller");
 const { isAuthenticated, authorizRoles } = require("../../middleware/auth");
 const userRouter = express.Router();
@@ -24,7 +26,24 @@ userRouter.get(
   getAllStudents
 );
 
-userRouter.get("/students/:studentId", getUserById);
+userRouter.get(
+  "/students/:studentId",
+  isAuthenticated,
+  authorizRoles("admin"),
+  getUserById
+);
+userRouter.patch(
+  "/students/:studentId/block",
+  isAuthenticated,
+  authorizRoles("admin"),
+  blockUser
+);
+userRouter.patch(
+  "/students/:studentId/unblock",
+  isAuthenticated,
+  authorizRoles("admin"),
+  unblockUser
+);
 userRouter.get("/session", isAuthenticated, getUserByToken);
 
 module.exports = userRouter;

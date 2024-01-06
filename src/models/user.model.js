@@ -53,6 +53,10 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    isBlocked: {
+      type: Boolean,
+      default: false,
+    },
     enrollments: [
       {
         courseId: { type: mongoose.Schema.Types.ObjectId, ref: "Course" },
@@ -72,6 +76,9 @@ const userSchema = new mongoose.Schema(
           type: String,
         },
         order_id: {
+          type: String,
+        },
+        paymentType: {
           type: String,
         },
         purchasedAt: {
