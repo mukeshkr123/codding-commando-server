@@ -13,6 +13,9 @@ const purchaseSchema = new mongoose.Schema(
     amount: {
       type: Number,
     },
+    method: {
+      type: String,
+    },
   },
   {
     timestamps: true,

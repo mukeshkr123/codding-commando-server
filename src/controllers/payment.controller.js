@@ -61,6 +61,11 @@ const createPaymentOrder = CatchAsyncError(async (req, res, next) => {
   try {
     const courseId = req.params.courseId;
     const user = req.user;
+    const method = req.body.method;
+
+    if (method !== "fullPrice" && method !== "installment") {
+      throw new Error("Something went wrong , please try again later");
+    }
 
     if (!user) {
       throw new Error("Unauthorized ");
@@ -99,8 +104,16 @@ const createPaymentOrder = CatchAsyncError(async (req, res, next) => {
       key_secret: process.env.RAZORPAY_API_SECRET,
     });
 
+    let price;
+
+    if (method === "fullPrice") {
+      price = paymentDetail?.fullPrice;
+    } else {
+      price = paymentDetail?.installmentPrice;
+    }
+
     const payment_capture = 1;
-    const amount = paymentDetail.fullPrice * 100;
+    const amount = price * 100;
     const currency = "INR";
     const options = {
       amount: amount.toString(),
@@ -113,6 +126,7 @@ const createPaymentOrder = CatchAsyncError(async (req, res, next) => {
         courseId: course.id,
         imageUrl: course.imageUrl,
         description: course.title,
+        method: method,
       },
     };
 
@@ -125,6 +139,8 @@ const createPaymentOrder = CatchAsyncError(async (req, res, next) => {
       name: `${user?.firstName} ${user?.lastName}`,
       email: user?.email,
       phone: user?.phone,
+      price,
+      method,
     });
   } catch (error) {
     return next(new ErrorHandler(error.message, 400));
@@ -138,6 +154,7 @@ const verifyPaymentOrder = CatchAsyncError(async (req, res, next) => {
       razorpay_payment_id,
       razorpay_signature,
       amount,
+      method,
     } = req.body;
 
     const courseId = req.params.courseId;
@@ -174,6 +191,7 @@ const verifyPaymentOrder = CatchAsyncError(async (req, res, next) => {
         courseId: courseId,
         userId: user._id,
         amount: amount,
+        method: method,
       });
     } else {
       return res.status(400).json({
