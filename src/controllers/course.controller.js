@@ -226,14 +226,23 @@ const getCourseById = CatchAsyncError(async (req, res, next) => {
     const course = await Course.findById({ _id: courseId })
       .populate({
         path: "program_curriculum",
+        select: "title",
         populate: {
           path: "description",
           model: "ProgramDesc",
+          select: "title",
         },
       })
-      .populate("strategy")
+      .populate({
+        path: "strategy",
+        select: "title description imageUrl ",
+      })
       .populate("paymentDetail")
-      .populate("mentors");
+      .populate({
+        path: "mentors",
+        select: "name description imageUrl additionInfo",
+      })
+      .select("-isPublished -enrollments");
 
     if (!course) {
       return next(new ErrorHandler("Course not found", 404));
@@ -335,6 +344,18 @@ const deleteCourse = CatchAsyncError(async (req, res, next) => {
   }
 });
 
+const getCoursesBanner = CatchAsyncError(async (req, res) => {
+  try {
+    const banners = await Course.find().select("banner title");
+
+    return res.status(200).json({
+      banners,
+    });
+  } catch (error) {
+    return next(new ErrorHandler(error.message, 400));
+  }
+});
+
 module.exports = {
   createCourse,
   updateCourse,
@@ -348,4 +369,5 @@ module.exports = {
   publishCourse,
   deleteCourse,
   unpublishCourse,
+  getCoursesBanner,
 };

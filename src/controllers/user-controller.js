@@ -102,6 +102,7 @@ const getUserByToken = CatchAsyncError(async (req, res) => {
     if (!user) {
       throw new Error("User not found");
     }
+
     res.status(200).json({
       success: true,
       user: {
@@ -110,6 +111,7 @@ const getUserByToken = CatchAsyncError(async (req, res) => {
         phone: user?.phone,
         role: user?.role,
         avatar: user?.avatar,
+        enrolledCourses: user?.enrollments,
       },
     });
   } catch (error) {

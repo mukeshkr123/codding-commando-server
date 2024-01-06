@@ -122,9 +122,11 @@ const createPaymentOrder = CatchAsyncError(async (req, res, next) => {
       success: true,
       message: "Order created successfully",
       order,
+      name: `${user?.firstName} ${user?.lastName}`,
+      email: user?.email,
+      phone: user?.phone,
     });
   } catch (error) {
-    console.error("Error in creating payment order:", error);
     return next(new ErrorHandler(error.message, 400));
   }
 });

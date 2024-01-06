@@ -3,7 +3,10 @@ const userRouter = require("./v1/user.routes");
 const contactRouter = require("./v1/contact-to.routes");
 const courseRouter = require("./v1/course.routes");
 const mentorRouter = require("./v1/mentor.routes");
-const { getEnrolledCourses } = require("../controllers/course.controller");
+const {
+  getEnrolledCourses,
+  getCoursesBanner,
+} = require("../controllers/course.controller");
 const { isAuthenticated } = require("../middleware/auth");
 const analyticsRouter = require("./v1/analytics.routes");
 const { getAllMentorsByUser } = require("../controllers/mentor-controller");
@@ -21,5 +24,6 @@ router.use("/send", contactRouter);
 router.use("/mentors", mentorRouter);
 router.use("/", analyticsRouter);
 router.get("/teachers", getAllMentorsByUser);
+router.get("/banners", getCoursesBanner);
 
 module.exports = router;
