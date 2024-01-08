@@ -266,22 +266,41 @@ const getEnrolledCourses = CatchAsyncError(async (req, res, next) => {
       select: "id title description duration",
     });
 
+    // Check if user or user.enrollments is null or undefined
+    if (!user || !user.enrollments) {
+      return res.status(200).json({
+        success: true,
+        courses: [],
+      });
+    }
+
     // Now the user object should have enrollments populated with course details
     const enrolledCourses = user.enrollments.map((enrollment) => {
+      // Check if enrollment.courseId is null or undefined
+      if (!enrollment.courseId) {
+        return null;
+      }
+
       const course = {
-        _id: enrollment.courseId.id,
-        title: enrollment.courseId.title,
-        description: enrollment.courseId.description,
-        duration: enrollment.courseId.duration,
+        _id: enrollment.courseId.id || null,
+        title: enrollment.courseId.title || null,
+        description: enrollment.courseId.description || null,
+        duration: enrollment.courseId.duration || null,
       };
       return course;
     });
 
+    // Filter out null values from the result array
+    const validEnrolledCourses = enrolledCourses.filter(
+      (course) => course !== null
+    );
+
     res.status(200).json({
       success: true,
-      courses: enrolledCourses,
+      courses: validEnrolledCourses,
     });
   } catch (error) {
+    console.log(error);
     return next(new ErrorHandler("Internal Server Error", 500));
   }
 });

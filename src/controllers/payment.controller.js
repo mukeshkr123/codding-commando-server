@@ -221,11 +221,13 @@ const getAllPuchase = CatchAsyncError(async (req, res, next) => {
         select: "title",
       });
 
+    console.log(response);
+
     const results = response.map((purchase) => ({
       name: purchase.userId.firstName,
       email: purchase.userId.email,
       amount: purchase.amount,
-      courseTitle: purchase.courseId.title,
+      courseTitle: purchase?.courseId?.title,
       createdAt: purchase.createdAt,
       method: purchase.method,
     }));
