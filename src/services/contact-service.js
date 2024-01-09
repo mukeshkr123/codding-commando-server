@@ -10,6 +10,16 @@ const createContact = async (data) => {
     throw new ErrorHandler("Please provide all required fields", 400);
   }
 
+  const existingEmailContact = await Contact.findOne({ email });
+  if (existingEmailContact) {
+    throw new Error("You have already registered for demo");
+  }
+
+  const existingPhoneContact = await Contact.findOne({ phone });
+  if (existingPhoneContact) {
+    throw new Error("You have already registered for demo");
+  }
+
   const contact = await Contact.create({
     firstName,
     lastName,

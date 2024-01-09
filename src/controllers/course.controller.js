@@ -215,7 +215,6 @@ const getAllPublishedCourse = CatchAsyncError(async (req, res, next) => {
 });
 
 const getCourseById = CatchAsyncError(async (req, res, next) => {
-  //TODO: separate to service
   try {
     const courseId = req.params.courseId;
 
@@ -263,7 +262,7 @@ const getEnrolledCourses = CatchAsyncError(async (req, res, next) => {
     // Use findById with populate to fetch user and populate the enrollments field
     const user = await User.findById(req.user.id).populate({
       path: "enrollments.courseId",
-      select: "id title description duration",
+      select: "id title description duration imageUrl",
     });
 
     // Check if user or user.enrollments is null or undefined
@@ -286,6 +285,7 @@ const getEnrolledCourses = CatchAsyncError(async (req, res, next) => {
         title: enrollment.courseId.title || null,
         description: enrollment.courseId.description || null,
         duration: enrollment.courseId.duration || null,
+        imageUrl: enrollment.courseId.imageUrl || null,
       };
       return course;
     });
@@ -349,7 +349,7 @@ const deleteCourse = CatchAsyncError(async (req, res, next) => {
   try {
     const courseId = req.params.courseId;
 
-    const deleteCourse = await Course.findOneAndDelete(courseId);
+    const deleteCourse = await Course.findByIdAndDelete(courseId);
 
     if (!deleteCourse) {
       return next(new ErrorHandler("Course not found", 404));

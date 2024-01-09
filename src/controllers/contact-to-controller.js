@@ -3,6 +3,8 @@ const contactService = require("../services/contact-service");
 
 const toContact = CatchAsyncError(async (req, res, next) => {
   try {
+    const { phone, email } = req.body;
+
     const contact = await contactService.createContact(req.body);
 
     return res.status(200).json({
